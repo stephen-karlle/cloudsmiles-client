@@ -68,15 +68,14 @@ const DateMessage = ({ handleSendMessage }: IDateMessage) => {
     handleSendMessage(prompt);
   };
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading ) return <div>Loading...</div>;
   if (!data) return <div>No data</div>;
 
-  const availability = data.availability || [];
-  const schedule = data.schedule || [];
+  const availability = data.availability
+  const schedule = data.schedule
   const dayMap = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 
-  console.log("data", data);
 
   return (
     <article className="border-t border-gray-200 p-4 pt-6 mt-4 flex flex-col">
@@ -147,8 +146,7 @@ const DateMessage = ({ handleSendMessage }: IDateMessage) => {
                 return availableDate.getTime() === date.getTime(); // Ensure exact match
               });
 
-              const isNotAvailable =
-                schedule && !schedule.some((schedule) => schedule.day === dayMap[date.getDay()]);
+              const isNotAvailable = schedule && !schedule.some((schedule) => schedule.day === dayMap[date.getDay()]);
 
               const isDisabled = isPastDate || isNotAvailable;
               const isFull = availabilityObj?.isFull || false;
@@ -182,7 +180,7 @@ const DateMessage = ({ handleSendMessage }: IDateMessage) => {
                         "text-gray-400 cursor-not-allowed": isDisabled || !isToday || isPastDate,
                         "text-rose-500 cursor-not-allowed": isFull,
                         "text-amber-500": isAlmostFull,
-                        "text-gray-700 font-normal": isCurrentMonth,
+                        "text-gray-700 font-normal": isCurrentMonth && !isDisabled && !isFull,
                       }
                     )}
                   >
