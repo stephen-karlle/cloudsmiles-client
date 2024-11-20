@@ -25,7 +25,7 @@ const DateMessage = ({ handleSendMessage }: IDateMessage) => {
     return date;
   });
 
-  const { data, isLoading, isFetching, isPending, isRefetching } = useQuery<DentistDateAvailabilityResponse>({
+  const { data, isLoading } = useQuery<DentistDateAvailabilityResponse>({
     queryKey: ["chatbotDentistDateAvailabilityData"],
     queryFn: async () => {
       const res = await getDentistDateAvailability(patientId);
@@ -68,7 +68,7 @@ const DateMessage = ({ handleSendMessage }: IDateMessage) => {
     handleSendMessage(prompt);
   };
 
-  if (isLoading || isFetching || isPending || isRefetching) return <div>Loading...</div>;
+  if (isLoading) return <div>Loading...</div>;
   if (!data) return <div>No data</div>;
 
   const availability = data.availability || [];
@@ -150,6 +150,11 @@ const DateMessage = ({ handleSendMessage }: IDateMessage) => {
               const isDisabled = isPastDate || isNotAvailable;
               const isFull = availabilityObj?.isFull || false;
               const isAlmostFull = availabilityObj?.isAlmostFull || false;
+
+              console.log(isFull, isAlmostFull);
+              console.log(availabilityObj);
+              console.log(date);
+              console.log(isNotAvailable)
 
               return (
                 <div
