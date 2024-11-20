@@ -1,0 +1,204 @@
+@import url('https://fonts.cdnfonts.com/css/sf-pro-display');
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 10px;
+  border-radius: 9999px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #e5e7eb; 
+}
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #d1d5db; 
+  border-radius: 9999px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #6b7280; 
+}
+
+
+@keyframes pulse {
+  0% {
+    transform: scale(1.2);
+  }
+  50% {
+    transform: scale(1.5);
+  }
+  100% {
+    transform: scale(1.2);
+  }
+}
+
+.pulse {
+  animation: pulse 1s infinite;
+}
+
+
+.scroll-gutter {
+  scrollbar-gutter: stable both-edges;
+}
+.scroll-smooth{
+  scroll-behavior: smooth;
+}
+
+
+.stripes-unavailable {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    #e5e7eb,
+    #e5e7eb 5px,
+    #f3f4f6 5px,
+    #f3f4f6 19.6px
+  );
+}
+
+
+.stripes-dentist-dayoff {
+  background: repeating-linear-gradient(
+    45deg,
+    #e5e7eb,
+    #e5e7eb 5px,
+    #f3f4f6 5px,
+    #f3f4f6 19.6px
+  );
+}
+
+
+.stripes-lunch-break {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    #f3f4f6,
+    #f3f4f6 8px,
+    #fff 8px,
+    #fff 25px
+  );
+}
+
+.animate {
+  animation-duration: 0.3s;
+  animation-name: animate-fade;
+  animation-delay: 0.2s;
+  animation-fill-mode: backwards;
+}
+
+@keyframes animate-fade {
+  0% { 
+    opacity: 0; 
+  }
+  100% { 
+    opacity: 1; 
+  }
+}
+
+
+.stripes-not-working {
+  background: repeating-linear-gradient(
+    45deg,
+    #e5e7eb,
+    #e5e7eb 2px,
+    #f3f4f6 2px,
+    #f3f4f6 5px
+  );
+}
+
+.dashed {
+  stroke-dasharray: 8, 8.5;
+}
+
+
+.animate-width {
+  flex: 0 1 auto;
+  transition: all 0.5s ease-in-out;
+}
+.animate-width:hover {
+  flex: 1 0 auto;
+}
+
+
+@keyframes linearLoading {
+  0% {
+    transform: translate(-100%);
+  }
+  100% {
+    transform: translate(100%);
+  }
+}
+
+.animate-linear-loading {
+  animation: linearLoading 2s cubic-bezier(0.23, 1, 0.320, 1) infinite ;
+}
+
+.stripes-patients{
+  background: repeating-linear-gradient(
+    90deg,
+    #fff,
+    #fff 2px,
+    #9ca3af 4px,
+    #9ca3af 4px
+  );
+}
+
+
+/* Animation */
+.custom-shimmer-body{
+  background: linear-gradient(90deg,
+  rgb(226, 228, 232) 25%,
+  rgb(245, 246, 247) 40%,
+  rgb(245, 246, 247) 75%,
+  rgb(226, 228, 232) 100%);
+  background-size: 200% 100%; 
+  animation: shimmer-body 2s infinite linear;
+}
+
+@keyframes shimmer-body {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+
+.animate-shimmer {
+  --light-color: linear-gradient(90deg,
+  rgb(229, 231, 235) 25%,
+  rgb(243, 244, 246) 40%,
+  rgb(243, 244, 246) 75%,
+  rgb(229, 231, 235) 100%);
+  background: var(--light-color);
+  background-size: 200% 100%;
+  animation: shimmer 3s infinite linear;
+}
+
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
