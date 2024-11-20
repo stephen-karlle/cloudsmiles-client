@@ -18,7 +18,7 @@ type AddSectionTreatmentsSheetProps = {
 }
 
 const AddSectionTreatmentsSheet = ({ 
-  selectedSection ,
+  selectedSection,
   setSelectedSection  
 } : AddSectionTreatmentsSheetProps) => {
 
@@ -27,24 +27,24 @@ const AddSectionTreatmentsSheet = ({
   const isFinal = false
 
   const setViewActiveSheets =  useViewAppointmentStore((state) => state.setViewActiveSheets)
-  const { control, watch , trigger } = useFormContext()
+  const { control, watch , trigger, getValues } = useFormContext()
 
 
-  const sectionCheckups = watch("checkupData.sectionCheckup") as SectionCheckupType[] 
+  const sectionCheckups = watch("sectionCheckup") as SectionCheckupType[] 
   const tempIndex = sectionCheckups.findIndex((checkup) => checkup.sectionName === selectedSection.id)
   const checkupIndex = tempIndex === -1 ? 0 : tempIndex
-  const sectionTreatmentPlans = watch(`checkupData.sectionCheckup.${checkupIndex}.sectionTreatmentPlans`) as SectionTreatmentPlansType[]
+  const sectionTreatmentPlans = watch(`sectionCheckup.${checkupIndex}.sectionTreatmentPlans`) as SectionTreatmentPlansType[]
+
   const { remove: removeSectionCheckup, } = useFieldArray({
     control, 
-    name: "checkupData.sectionCheckup", 
+    name: "sectionCheckup", 
   });  
 
   const { append: appendTreatmentPlan, remove: removeTreatmentPlan} = useFieldArray({
     control, 
-    name: `checkupData.sectionCheckup.${checkupIndex}.sectionTreatmentPlans`, 
+    name: `sectionCheckup.${checkupIndex}.sectionTreatmentPlans`, 
   });  
   
-
   const handleAddMoreTreatment = () => {
     appendTreatmentPlan({
       sectionCondition: "",
@@ -53,24 +53,32 @@ const AddSectionTreatmentsSheet = ({
     });
   };
   
-  const cleanInvalidTreatmentPlans = () => {
-    const invalidIndexes = sectionCheckups
-    .map((checkup, index) => (checkup.sectionTreatmentPlans.length === 0 ? index : -1))
-      .filter(index => index !== -1);
+  const cleanInvalidTreatmentPlans = async () => {
+    const invalidIndexes: number[] = [];
+
+    // Loop through each tooth checkup and validate its treatment plans
+   for (let index = 0; index < sectionCheckups.length; index++) {
+      if (sectionCheckups[index].sectionTreatmentPlans.length === 0) {
+        invalidIndexes.push(index);
+        removeSectionCheckup(index);
+      }
+    }
 
     setTimeout(() => {
-      for (let i = invalidIndexes.length - 1; i >= 0; i--) {
-        removeSectionCheckup(invalidIndexes[i]);
-      }
+      invalidIndexes.forEach(index => {
+        removeSectionCheckup(index);
+        
+      });
       setSelectedSection(null);
+
     }, 370); 
   };
-  
+
   const handleClose = async () => {
     const invalidIndexes: number[] = [];
     // Check if treatment plans are valid
     for (let i = 0; i < sectionTreatmentPlans.length; i++) {
-      const isValid = await trigger(`checkupData.sectionCheckup.${checkupIndex}.sectionTreatmentPlans.${i}`);
+      const isValid = await trigger(`sectionCheckup.${checkupIndex}.sectionTreatmentPlans.${i}`);
       if (!isValid) {
         invalidIndexes.push(i);
       }
@@ -87,8 +95,7 @@ const AddSectionTreatmentsSheet = ({
     );
   }
 
-
-  const { data: treatmentConstants, isLoading } = useQuery({
+  const { data: treatments, isLoading } = useQuery({
     queryKey: ['treatmentSectionDataItems'],
     queryFn: async () => {
       try {
@@ -100,11 +107,9 @@ const AddSectionTreatmentsSheet = ({
     },
   });
 
-
-
   const handleSubmit = async () => {
     cleanInvalidTreatmentPlans();
-    const isValid = await trigger([`checkupData.sectionCheckup.${checkupIndex}.sectionTreatmentPlans`]);
+    const isValid = await trigger([`sectionCheckup.${checkupIndex}.sectionTreatmentPlans`]);
     if (isValid) {
       setViewActiveSheets((prev) => 
         prev.filter(sheet => sheet.name !== "ExtraSheet2")
@@ -113,18 +118,12 @@ const AddSectionTreatmentsSheet = ({
     }
   }
 
-  const filteredTreatmentConstants = (treatmentConstants ?? [])
-  .filter(
-    (treatment) =>
-      !sectionTreatmentPlans.some(
-        (plan) => plan.sectionTreatmentId === treatment._id
-      )
-  )
-  .map((treatment) => ({
+  const treatmentConstants = treatments ? treatments.map(treatment => ({
     id: treatment._id,
     name: treatment.treatmentName,
-  }));
+  }) ) : []
 
+  console.log(getValues())
 
   return (
     <article className="flex flex-col w-full h-full">
@@ -156,11 +155,8 @@ const AddSectionTreatmentsSheet = ({
                 key={index}
                 index={index}
                 checkupIndex={checkupIndex}
-                filteredTreatmentConstants={filteredTreatmentConstants}
-                treatmentConstants={(treatmentConstants ?? []).map(treatment => ({
-                  id: treatment._id,
-                  name: treatment.treatmentName,
-                }))}
+                filteredTreatmentConstants={treatmentConstants}
+                treatmentConstants={treatmentConstants}
               />
             ))}
           </div>
