@@ -75,6 +75,9 @@ const DateMessage = ({ handleSendMessage }: IDateMessage) => {
   const schedule = data.schedule || [];
   const dayMap = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
+
+  console.log("data", data);
+
   return (
     <article className="border-t border-gray-200 p-4 pt-6 mt-4 flex flex-col">
       <section className="flex items-center justify-between gap-4">
@@ -150,11 +153,6 @@ const DateMessage = ({ handleSendMessage }: IDateMessage) => {
               const isDisabled = isPastDate || isNotAvailable;
               const isFull = availabilityObj?.isFull || false;
               const isAlmostFull = availabilityObj?.isAlmostFull || false;
-
-              console.log(isFull, isAlmostFull);
-              console.log(availabilityObj);
-              console.log(date);
-              console.log(isNotAvailable)
 
               return (
                 <div
