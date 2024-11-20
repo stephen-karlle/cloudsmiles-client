@@ -25,13 +25,23 @@ const DateMessage = ({ handleSendMessage }: IDateMessage) => {
     return date;
   });
 
-  const { data, isLoading } = useQuery<DentistDateAvailabilityResponse>({
-    queryKey: ["chatbotDentistDateAvailabilityData"],
-    queryFn: async () => {
+const { data, isLoading, isError } = useQuery<DentistDateAvailabilityResponse>({
+  queryKey: ["chatbotDentistDateAvailabilityData"],
+  queryFn: async () => {
+    try {
       const res = await getDentistDateAvailability(patientId);
       return res;
-    },
-  });
+    } catch (error) {
+      console.error("Error fetching availability:", error);
+      return { availability: [], schedule: [] }; // Fallback data
+    }
+  },
+});
+
+if (isError) {
+  return <div>Something went wrong. Please try again later.</div>;
+}
+
 
   const dates = generateDates(currentDate);
 
@@ -67,6 +77,8 @@ const DateMessage = ({ handleSendMessage }: IDateMessage) => {
     const prompt = `I would like to set my appointment at ${formattedDate}.`;
     handleSendMessage(prompt);
   };
+
+  console.log(data)
 
   if (isLoading) return <div>Loading...</div>;
   if (!data) return <div>No data</div>;
