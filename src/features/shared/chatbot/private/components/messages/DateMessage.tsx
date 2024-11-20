@@ -25,23 +25,13 @@ const DateMessage = ({ handleSendMessage }: IDateMessage) => {
     return date;
   });
 
-const { data, isLoading, isError } = useQuery<DentistDateAvailabilityResponse>({
-  queryKey: ["chatbotDentistDateAvailabilityData"],
-  queryFn: async () => {
-    try {
+  const { data, isLoading, isFetching, isPending, isRefetching } = useQuery<DentistDateAvailabilityResponse>({
+    queryKey: ["chatbotDentistDateAvailabilityData"],
+    queryFn: async () => {
       const res = await getDentistDateAvailability(patientId);
       return res;
-    } catch (error) {
-      console.error("Error fetching availability:", error);
-      return { availability: [], schedule: [] }; // Fallback data
-    }
-  },
-});
-
-if (isError) {
-  return <div>Something went wrong. Please try again later.</div>;
-}
-
+    },
+  });
 
   const dates = generateDates(currentDate);
 
@@ -78,9 +68,7 @@ if (isError) {
     handleSendMessage(prompt);
   };
 
-  console.log(data)
-
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading || isFetching || isPending || isRefetching) return <div>Loading...</div>;
   if (!data) return <div>No data</div>;
 
   const availability = data.availability || [];
