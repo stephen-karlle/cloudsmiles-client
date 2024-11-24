@@ -29,19 +29,18 @@ const AddToothTreatmentsSheet = ({
   const { control, watch , trigger} = useFormContext()
 
 
-  const toothCheckups = watch("toothCheckup") as ToothCheckupType[] 
+  const toothCheckups = watch("checkupData.toothCheckup") as ToothCheckupType[] 
   const tempIndex = toothCheckups.findIndex((checkup) => checkup.toothNumber === selectedTooth.id)
   const checkupIndex = tempIndex === -1 ? 0 : tempIndex
-  const toothTreatmentPlans = watch(`toothCheckup.${checkupIndex}.toothTreatmentPlans`) as ToothTreatmentPlansType[]
-
+  const toothTreatmentPlans = watch(`checkupData.toothCheckup.${checkupIndex}.toothTreatmentPlans`) as ToothTreatmentPlansType[]
   const { remove: removeToothCheckup, } = useFieldArray({
     control, 
-    name: "toothCheckup", 
+    name: "checkupData.toothCheckup", 
   });  
 
   const { append: appendTreatmentPlan, remove: removeTreatmentPlan} = useFieldArray({
     control, 
-    name: `toothCheckup.${checkupIndex}.toothTreatmentPlans`, 
+    name: `checkupData.toothCheckup.${checkupIndex}.toothTreatmentPlans`, 
   });  
   
 
@@ -53,33 +52,25 @@ const AddToothTreatmentsSheet = ({
     });
   };
   
-  const cleanInvalidTreatmentPlans = async () => {
-    const invalidIndexes: number[] = [];
-
-    // Loop through each tooth checkup and validate its treatment plans
-   for (let index = 0; index < toothCheckups.length; index++) {
-      if (toothCheckups[index].toothTreatmentPlans.length === 0) {
-        invalidIndexes.push(index);
-        removeToothCheckup(index);
-      }
-    }
+  const cleanInvalidTreatmentPlans = () => {
+    const invalidIndexes = toothCheckups
+    .map((checkup, index) => (checkup.toothTreatmentPlans.length === 0 ? index : -1))
+      .filter(index => index !== -1);
 
     setTimeout(() => {
-      invalidIndexes.forEach(index => {
-        removeToothCheckup(index);
-        
-      });
+      for (let i = invalidIndexes.length - 1; i >= 0; i--) {
+        removeToothCheckup(invalidIndexes[i]);
+      }
       setSelectedTooth(null);
 
     }, 370); 
   };
   
-
   const handleClose = async () => {
     const invalidIndexes: number[] = [];
     // Check if treatment plans are valid
     for (let i = 0; i < toothTreatmentPlans.length; i++) {
-      const isValid = await trigger(`toothCheckup.${checkupIndex}.toothTreatmentPlans.${i}`);
+      const isValid = await trigger(`checkupData.toothCheckup.${checkupIndex}.toothTreatmentPlans.${i}`);
       if (!isValid) {
         invalidIndexes.push(i);
       }
@@ -97,7 +88,7 @@ const AddToothTreatmentsSheet = ({
   }
 
 
-  const { data: treatments, isLoading } = useQuery({
+  const { data: treatmentConstants, isLoading } = useQuery({
     queryKey: ['treatmentToothDataItems'],
     queryFn: async () => {
       try {
@@ -113,7 +104,7 @@ const AddToothTreatmentsSheet = ({
 
   const handleSubmit = async () => {
     cleanInvalidTreatmentPlans();
-    const isValid = await trigger([`toothCheckup.${checkupIndex}.toothTreatmentPlans`]);
+    const isValid = await trigger([`checkupData.toothCheckup.${checkupIndex}.toothTreatmentPlans`]);
     if (isValid) {
       setViewActiveSheets((prev) => 
         prev.filter(sheet => sheet.name !== "ExtraSheet2")
@@ -121,17 +112,14 @@ const AddToothTreatmentsSheet = ({
       return;
     }
   }
-
-  if (isLoading) {
-    return <p>Loading...</p>
-  }
-
-
-  const treatmentConstants = treatments ? treatments.map(treatment => ({
+  
+  const filteredTreatmentConstants = treatmentConstants ? treatmentConstants.filter(treatment => {
+    const isExist = toothTreatmentPlans && toothTreatmentPlans.find(treatmentPlan => treatmentPlan.toothTreatmentId === treatment._id)
+    return !isExist
+  }) .map(treatment => ({
     id: treatment._id,
     name: treatment.treatmentName,
-  }) ) : []
-
+  })) : []
 
   return (
     <article className="flex flex-col w-full h-full ">
@@ -163,8 +151,11 @@ const AddToothTreatmentsSheet = ({
                 key={index}
                 index={index}
                 checkupIndex={checkupIndex}
-                filteredTreatmentConstants={treatmentConstants}
-                treatmentConstants={treatmentConstants}              
+                filteredTreatmentConstants={filteredTreatmentConstants}
+                treatmentConstants={(treatmentConstants ?? []).map(treatment => ({
+                  id: treatment._id,
+                  name: treatment.treatmentName,
+                }))}              
               />
             ))}
           </div>
