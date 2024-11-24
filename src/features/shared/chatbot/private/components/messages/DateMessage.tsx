@@ -203,12 +203,12 @@ const DateMessage = ({ handleSendMessage }: IDateMessage) => {
                           "text-rose-500 cursor-not-allowed": isFull, // High priority: applied first
                           "text-amber-500": isAlmostFull,            // Applied only if `isFull` is false
                           "text-gray-400 cursor-not-allowed": (isDisabled || !isToday || isPastDate) && !isFull && !isAlmostFull,
-                          "text-gray-700 font-normal": isCurrentMonth && !isDisabled && !isFull && isToday,
                           "text-white font-medium": isSelected,
+                          "text-gray-700 font-normal": isCurrentMonth && !isDisabled && !isFull || isToday,
                         }
                       )}
                     >
-                      {isFull ? "F" : date.getDate()}
+                      {isPastDate ? "-" :isFull ? "F" : date.getDate()}
                     </p>
                 </div>
               );
