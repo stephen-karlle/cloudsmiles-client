@@ -26,9 +26,9 @@ const DateMessage = ({ handleSendMessage }: IDateMessage) => {
   });
 
   const { data, isLoading } = useQuery<DentistDateAvailabilityResponse>({
-    queryKey: ["chatbotDentistDateAvailabilityData"],
+    queryKey: ["chatbotDentistDateAvailabilityData", currentDate],
     queryFn: async () => {
-      const res = await getDentistDateAvailability(patientId);
+      const res = await getDentistDateAvailability(patientId, currentDate.toISOString());
       return res;
     },
   });
@@ -68,12 +68,14 @@ const DateMessage = ({ handleSendMessage }: IDateMessage) => {
     handleSendMessage(prompt);
   };
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading ) return <div>Loading...</div>;
   if (!data) return <div>No data</div>;
 
-  const availability = data.availability || [];
-  const schedule = data.schedule || [];
+  const availability = data.availability
+  const schedule = data.schedule
   const dayMap = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+
 
   return (
     <article className="border-t border-gray-200 p-4 pt-6 mt-4 flex flex-col">
@@ -144,8 +146,7 @@ const DateMessage = ({ handleSendMessage }: IDateMessage) => {
                 return availableDate.getTime() === date.getTime(); // Ensure exact match
               });
 
-              const isNotAvailable =
-                schedule && !schedule.some((schedule) => schedule.day === dayMap[date.getDay()]);
+              const isNotAvailable = schedule && !schedule.some((schedule) => schedule.day === dayMap[date.getDay()]);
 
               const isDisabled = isPastDate || isNotAvailable;
               const isFull = availabilityObj?.isFull || false;
@@ -172,19 +173,19 @@ const DateMessage = ({ handleSendMessage }: IDateMessage) => {
                   {!isPastDate && !isSelected && !isFull && isAlmostFull && (
                     <div className="w-2 h-2 bg-amber-500 rounded-full absolute -bottom-1" />
                   )}
-                  <p
-                    className={clsx(
-                      {
-                        "text-white font-medium": isSelected,
-                        "text-gray-400 cursor-not-allowed": isDisabled || !isToday || isPastDate,
-                        "text-rose-500 cursor-not-allowed": isFull,
-                        "text-amber-500": isAlmostFull,
-                        "text-gray-700 font-normal": isCurrentMonth,
-                      }
-                    )}
-                  >
-                    {isPastDate || isNotAvailable ? "-" : isFull ? "F" : date.getDate()}
-                  </p>
+                    <p
+                      className={clsx(
+                        {
+                          "text-rose-500 cursor-not-allowed": isFull, // High priority: applied first
+                          "text-amber-500": isAlmostFull,            // Applied only if `isFull` is false
+                          "text-gray-400 cursor-not-allowed": (isDisabled || !isToday || isPastDate) && !isFull && !isAlmostFull,
+                          "text-gray-700 font-normal": isCurrentMonth && !isDisabled && !isFull && isToday,
+                          "text-white font-medium": isSelected,
+                        }
+                      )}
+                    >
+                      {isFull ? "F" : date.getDate()}
+                    </p>
                 </div>
               );
             })}

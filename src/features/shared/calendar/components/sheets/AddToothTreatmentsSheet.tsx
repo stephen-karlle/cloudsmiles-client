@@ -113,19 +113,13 @@ const AddToothTreatmentsSheet = ({
     }
   }
   
-
-  const filteredTreatmentConstants = (treatmentConstants ?? [])
-  .filter(
-    (treatment) =>
-      !toothTreatmentPlans.some(
-        (plan) => plan.toothTreatmentId === treatment._id
-      )
-  )
-  .map((treatment) => ({
+  const filteredTreatmentConstants = treatmentConstants ? treatmentConstants.filter(treatment => {
+    const isExist = toothTreatmentPlans && toothTreatmentPlans.find(treatmentPlan => treatmentPlan.toothTreatmentId === treatment._id)
+    return !isExist
+  }) .map(treatment => ({
     id: treatment._id,
     name: treatment.treatmentName,
-  }));
-
+  })) : []
 
   return (
     <article className="flex flex-col w-full h-full ">

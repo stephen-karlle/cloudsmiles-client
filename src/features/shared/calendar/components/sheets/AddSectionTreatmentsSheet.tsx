@@ -113,18 +113,13 @@ const AddSectionTreatmentsSheet = ({
     }
   }
 
-  const filteredTreatmentConstants = (treatmentConstants ?? [])
-  .filter(
-    (treatment) =>
-      !sectionTreatmentPlans.some(
-        (plan) => plan.sectionTreatmentId === treatment._id
-      )
-  )
-  .map((treatment) => ({
+  const filteredTreatmentConstants = treatmentConstants ? treatmentConstants.filter(treatment => {
+    const isExist = sectionTreatmentPlans && sectionTreatmentPlans.find(treatmentPlan => treatmentPlan.sectionTreatmentId === treatment._id)
+    return !isExist
+  }).map(treatment => ({
     id: treatment._id,
     name: treatment.treatmentName,
-  }));
-
+  })) : []
 
   return (
     <article className="flex flex-col w-full h-full">

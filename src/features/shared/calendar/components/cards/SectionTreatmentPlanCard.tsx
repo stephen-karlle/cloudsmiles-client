@@ -15,8 +15,6 @@ type SectionTreatmentPlanCardType = {
   treatmentConstants: IOption[];
 };
 
-
-
 const SectionTreatmentPlanCard = ({ 
   index, 
   checkupIndex, 

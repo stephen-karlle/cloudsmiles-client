@@ -33,9 +33,9 @@ export const getDentistTimeAvailability = async (patientId: string) => {
   }
 }
 
-export const getDentistDateAvailability = async (patientId: string) => {
+export const getDentistDateAvailability = async (patientId: string, currentDate: string) => {
   try {
-    const res = await privateApiClient.get(`/staff/v1/get-dentist-date-availability/${patientId}`)
+    const res = await privateApiClient.get(`/staff/v1/get-dentist-date-availability/${patientId}?date=${currentDate}`)
     return res.data
   } catch(error) {
     console.log(error)
