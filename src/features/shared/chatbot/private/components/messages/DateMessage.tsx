@@ -87,7 +87,6 @@ const DateMessage = ({ handleSendMessage }: IDateMessage) => {
   const dayMap = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 
-  console.log(data)
 
 
   return (
@@ -153,14 +152,26 @@ const DateMessage = ({ handleSendMessage }: IDateMessage) => {
                 new Date(value).getDate() === date.getDate();
               const isPastDate = date < today;
 
-              // Compare using getTime() for exact match
-              const availabilityObj = availability.find((available) => {
-                const availableDate = new Date(available.date);
-                return availableDate.getTime() === date.getTime(); // Ensure exact match
+              // Helper function to reset time to midnight (UTC) for consistent comparison
+              const resetToMidnightUTC = (date: Date): Date => {
+                const resetDate = new Date(date);
+                resetDate.setHours(0, 0, 0, 0); // Reset time to midnight (00:00:00)
+                return resetDate;
+              };
+
+              const availabilityObj = availability.find((availability) => {
+                // Convert `availability.date` to Date object and reset to midnight UTC
+                const availabilityDate = resetToMidnightUTC(new Date(availability.date));
+                // Reset `date` to midnight UTC for consistency
+                const selectedDateReset = resetToMidnightUTC(date);
+
+                // Compare the dates
+                return availabilityDate.getTime() === selectedDateReset.getTime();
               });
 
-              const isNotAvailable = schedule && !schedule.some((schedule) => schedule.day === dayMap[date.getDay()]);
 
+              
+              const isNotAvailable = schedule && !schedule.some((schedule) => schedule.day === dayMap[date.getDay()]);
               const isDisabled = isPastDate || isNotAvailable;
               const isFull = availabilityObj?.isFull || false;
               const isAlmostFull = availabilityObj?.isAlmostFull || false;
