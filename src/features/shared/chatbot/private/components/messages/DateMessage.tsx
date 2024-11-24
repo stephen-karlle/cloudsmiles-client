@@ -42,25 +42,25 @@ const DateMessage = ({ handleSendMessage }: IDateMessage) => {
   const dates = generateDates(currentDate);
 
   const handlePrevMonth = () => {
-    setCurrentDate((prevDate) => new Date(prevDate.getFullYear(), prevDate.getMonth() - 1));
-    setQueryDate((prevDate) => new Date(prevDate.getFullYear(), prevDate.getMonth() - 1));
+    setCurrentDate((prevDate) => new Date(prevDate.getFullYear(), prevDate.getMonth() - 1, 15));
+    setQueryDate((prevDate) => new Date(prevDate.getFullYear(), prevDate.getMonth() - 1, 15));
   };
-
+  
   const handleNextMonth = () => {
-    setCurrentDate((prevDate) => new Date(prevDate.getFullYear(), prevDate.getMonth() + 1));
-    setQueryDate((prevDate) => new Date(prevDate.getFullYear(), prevDate.getMonth() + 1));
+    setCurrentDate((prevDate) => new Date(prevDate.getFullYear(), prevDate.getMonth() + 1, 15));
+    setQueryDate((prevDate) => new Date(prevDate.getFullYear(), prevDate.getMonth() + 1, 15));
   };
-
+  
   const handlePrevYear = () => {
-    setCurrentDate((prevDate) => new Date(prevDate.getFullYear() - 1, prevDate.getMonth()));
-    setQueryDate((prevDate) => new Date(prevDate.getFullYear() - 1, prevDate.getMonth()));
+    setCurrentDate((prevDate) => new Date(prevDate.getFullYear() - 1, prevDate.getMonth(), 15));
+    setQueryDate((prevDate) => new Date(prevDate.getFullYear() - 1, prevDate.getMonth(), 15));
   };
-
+  
   const handleNextYear = () => {
-    setCurrentDate((prevDate) => new Date(prevDate.getFullYear() + 1, prevDate.getMonth()));
-    setQueryDate((prevDate) => new Date(prevDate.getFullYear() + 1, prevDate.getMonth()));
-
+    setCurrentDate((prevDate) => new Date(prevDate.getFullYear() + 1, prevDate.getMonth(), 15));
+    setQueryDate((prevDate) => new Date(prevDate.getFullYear() + 1, prevDate.getMonth(), 15));
   };
+  
 
   const handleSelectDate = (date: Date | null) => {
     setValue(date);
@@ -86,7 +86,8 @@ const DateMessage = ({ handleSendMessage }: IDateMessage) => {
   const schedule = data.schedule
   const dayMap = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-
+  
+  console.log(queryDate)
 
 
   return (
@@ -172,7 +173,7 @@ const DateMessage = ({ handleSendMessage }: IDateMessage) => {
 
               
               const isNotAvailable = schedule && !schedule.some((schedule) => schedule.day === dayMap[date.getDay()]);
-              const isDisabled = isPastDate || isNotAvailable;
+              const isDisabled = isPastDate || isNotAvailable || !isCurrentMonth;
               const isFull = availabilityObj?.isFull || false;
               const isAlmostFull = availabilityObj?.isAlmostFull || false;
 
