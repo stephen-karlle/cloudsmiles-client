@@ -26,9 +26,9 @@ const DateMessage = ({ handleSendMessage }: IDateMessage) => {
   });
 
   const { data, isLoading } = useQuery<DentistDateAvailabilityResponse>({
-    queryKey: ["chatbotDentistDateAvailabilityData", currentDate],
+    queryKey: ["chatbotDentistDateAvailabilityData"],
     queryFn: async () => {
-      const res = await getDentistDateAvailability(patientId, currentDate.toISOString());
+      const res = await getDentistDateAvailability(patientId);
       return res;
     },
   });
@@ -173,19 +173,19 @@ const DateMessage = ({ handleSendMessage }: IDateMessage) => {
                   {!isPastDate && !isSelected && !isFull && isAlmostFull && (
                     <div className="w-2 h-2 bg-amber-500 rounded-full absolute -bottom-1" />
                   )}
-                    <p
-                      className={clsx(
-                        {
-                          "text-rose-500 cursor-not-allowed": isFull, // High priority: applied first
-                          "text-amber-500": isAlmostFull,            // Applied only if `isFull` is false
-                          "text-gray-400 cursor-not-allowed": (isDisabled || !isToday || isPastDate) && !isFull && !isAlmostFull,
-                          "text-gray-700 font-normal": isCurrentMonth && !isDisabled && !isFull && isToday,
-                          "text-white font-medium": isSelected,
-                        }
-                      )}
-                    >
-                      {isFull ? "F" : date.getDate()}
-                    </p>
+                  <p
+                    className={clsx(
+                      {
+                        "text-white font-medium": isSelected,
+                        "text-gray-400 cursor-not-allowed": isDisabled || !isToday || isPastDate,
+                        "text-rose-500 cursor-not-allowed": isFull,
+                        "text-amber-500": isAlmostFull,
+                        "text-gray-700 font-normal": isCurrentMonth && !isDisabled && !isFull,
+                      }
+                    )}
+                  >
+                    {isPastDate || isNotAvailable ? "-" : isFull ? "F" : date.getDate()}
+                  </p>
                 </div>
               );
             })}
