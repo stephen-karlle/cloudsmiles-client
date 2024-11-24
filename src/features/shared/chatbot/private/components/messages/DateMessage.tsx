@@ -20,6 +20,12 @@ const DateMessage = ({ handleSendMessage }: IDateMessage) => {
   const patientId = user._id;
 
   const [value, setValue] = useState<Date | null>();
+  const [ queryDate, setQueryDate ] = useState<Date>(
+    () => {
+      const date = new Date();
+      return date;
+    }
+  );
   const [currentDate, setCurrentDate] = useState(() => {
     const date = new Date();
     return date;
@@ -28,7 +34,7 @@ const DateMessage = ({ handleSendMessage }: IDateMessage) => {
   const { data, isLoading } = useQuery<DentistDateAvailabilityResponse>({
     queryKey: ["chatbotDentistDateAvailabilityData", currentDate],
     queryFn: async () => {
-      const res = await getDentistDateAvailability(patientId, currentDate.toISOString());
+      const res = await getDentistDateAvailability(patientId, queryDate.toISOString());
       return res;
     },
   });
@@ -37,18 +43,23 @@ const DateMessage = ({ handleSendMessage }: IDateMessage) => {
 
   const handlePrevMonth = () => {
     setCurrentDate((prevDate) => new Date(prevDate.getFullYear(), prevDate.getMonth() - 1));
+    setQueryDate((prevDate) => new Date(prevDate.getFullYear(), prevDate.getMonth() - 1));
   };
 
   const handleNextMonth = () => {
     setCurrentDate((prevDate) => new Date(prevDate.getFullYear(), prevDate.getMonth() + 1));
+    setQueryDate((prevDate) => new Date(prevDate.getFullYear(), prevDate.getMonth() + 1));
   };
 
   const handlePrevYear = () => {
     setCurrentDate((prevDate) => new Date(prevDate.getFullYear() - 1, prevDate.getMonth()));
+    setQueryDate((prevDate) => new Date(prevDate.getFullYear() - 1, prevDate.getMonth()));
   };
 
   const handleNextYear = () => {
     setCurrentDate((prevDate) => new Date(prevDate.getFullYear() + 1, prevDate.getMonth()));
+    setQueryDate((prevDate) => new Date(prevDate.getFullYear() + 1, prevDate.getMonth()));
+
   };
 
   const handleSelectDate = (date: Date | null) => {
@@ -75,6 +86,8 @@ const DateMessage = ({ handleSendMessage }: IDateMessage) => {
   const schedule = data.schedule
   const dayMap = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
+
+  console.log(data)
 
 
   return (
