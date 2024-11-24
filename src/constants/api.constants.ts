@@ -1,7 +1,7 @@
 import axios from "axios";
 
 
-export const serverUrl = 'http://localhost:2916/';
+export const serverUrl = 'https://cloudsmiles-server.onrender.com';
 
 export const publicApiClient = axios.create({
   baseURL: serverUrl,
