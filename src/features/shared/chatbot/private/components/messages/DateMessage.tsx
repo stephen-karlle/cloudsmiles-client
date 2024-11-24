@@ -205,7 +205,7 @@ const DateMessage = ({ handleSendMessage }: IDateMessage) => {
                           "text-amber-500": isAlmostFull,            // Applied only if `isFull` is false
                           "text-gray-400 cursor-not-allowed": (isDisabled || !isToday || isPastDate) && !isFull && !isAlmostFull,
                           "text-white font-medium": isSelected,
-                          "text-gray-700 font-normal": isCurrentMonth && !isDisabled && !isFull || isToday,
+                          "text-gray-700 font-normal": isCurrentMonth && !isDisabled && !isFull && !isAlmostFull || isToday,
                         }
                       )}
                     >
