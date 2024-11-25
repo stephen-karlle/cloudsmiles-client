@@ -45,7 +45,7 @@ const RateAppointmentForm = () => {
       setIsLoading(false)
     },
     onSuccess: () => {
-      handleCloseRating()
+      setExtraDrawerOpen(false)
     }
   });
   
