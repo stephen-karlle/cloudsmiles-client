@@ -54,10 +54,6 @@ const DentistDesktopNavbar = () => {
         </h1> 
       </div>
       <div className="flex items-center justify-end gap-4 w-[80%] h-full">
-        <button className="rounded-full flex items-center justify-center bg-green-50 w-8 h-8 ">
-          <BellIcon className="stroke-2 w-5 h-5 stroke-green-500 flex-shrink-0" />
-        </button>
-        <div className="h-full w-[1px] bg-gray-200" />
         <div className=" flex items-center justify-end gap-2 flex-shrink-0">
           <Avatar 
             name={user.fullName}
