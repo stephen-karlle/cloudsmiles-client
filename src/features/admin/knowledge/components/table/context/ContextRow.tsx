@@ -13,6 +13,7 @@ import PopOver from '@components/ui/PopOver';
 import EditContextForm from '../../forms/EditContextForm';
 import DeleteModal from '@components/ui/DeleteModal';
 import Toast from '@components/ui/Toast';
+import { getCategoryStyle } from '../../utils/knowledge.utils';
 
 
 interface IContextRow{
@@ -62,6 +63,9 @@ const ContextRow = ({
     mutation.mutate()
   }
 
+  const badgeStyle = getCategoryStyle(context.contextCategory)
+
+
   return (
     <TableRow 
       index={index}
@@ -96,15 +100,16 @@ const ContextRow = ({
       <TableData
         className="flex items-start gap-4 "
       >
-        <label className="text-sm text-gray-700 py-1">
+        <label className={`${badgeStyle} text-xs uppercase px-2 rounded-full py-1`}>
           {context.contextCategory}
         </label>
       </TableData>
       <TableData className="flex items-start gap-4">
-        <label className="text-sm text-gray-700 truncate max-w-md">
+        <label className="text-sm text-gray-500 line-clamp-2 max-w-[90%]">
           {context.contextData}
         </label>
       </TableData>
+
 
       <TableData className="flex items-start gap-4">
         <label className="text-sm text-gray-700">
