@@ -34,6 +34,7 @@ const AdminNavbar = () => {
     '/payment': 'Payment',
     '/vendors': 'Vendors',
     '/settings': 'Settings',
+    '/activities': 'Activities',
   };
 
   const getPageName = (path: string): string => {
