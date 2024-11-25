@@ -9,6 +9,8 @@ import { toast } from 'sonner';
 import { deleteOrder } from '@features/shared/stocks/services/order.services';
 import { motion } from 'framer-motion'
 import { formatISODateWithStringWithSuffix } from '@features/shared/calendar/utils/calendar.utils';
+import { createActivity } from '@features/admin/activities/services/activity.services';
+import { useUserStore } from '@stores/user.store';
 import ThreeDotsIcon from '@icons/linear/ThreeDotsIcon';
 import BankIcon from '@icons/linear/BankIcon';
 import PhilippinePesoIcon from '@icons/linear/PhilippinePesoIcon';
@@ -36,8 +38,8 @@ const OrderRow = ({
   gridTemplate,
 }: IInventoryRow ) => {
    
+  const user = useUserStore((state) => state.user)
   const queryClient = useQueryClient()
-
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const [ action, setAction ] = useState<string>('')
   const [ isDeleteModalOpen, setIsDeleteModalOpen ] = useState<boolean>(false);
@@ -78,6 +80,17 @@ const OrderRow = ({
   }
 
 
+  const handleDelete = async () => {
+    mutation.mutate()
+    if (user.role === "assistant") {
+      await createActivity({
+        activityAssistantId: user._id,
+        activityDescription: `Order ${order.orderSerialId} has been permanently removed.`,
+        activityAction: "Delete",
+      })
+    }
+  }
+
 
   return (
     <TableRow 
@@ -93,7 +106,7 @@ const OrderRow = ({
         title="Delete Order"
         message="This action cannot be undone. This will permanently delete your order from our servers."
         confirmation={`DELETE ${order.orderSerialId}`}
-        handleSubmit={mutation.mutate}
+        handleSubmit={handleDelete}
         isLoading={mutation.isPending}
       />
       <Drawer
