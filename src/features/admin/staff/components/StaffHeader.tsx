@@ -5,12 +5,18 @@ import LinkButton from '@components/shared/LinkButton'
 import UsersIcon from '@icons/linear/UsersIcon'
 import TableHeaderSkeleton from '@components/shared/skeletons/TableHeaderSkeleton'
 import Button from '@components/ui/Button'
-import FilterLinesIcon from '@icons/linear/FilterLinesIcon'
 import PlusIcon from '@icons/linear/PlusIcon'
 import AddNewAssistantForm from './forms/AddNewAssistantForm'
 import AddNewDentistForm from './forms/AddNewDentistForm'
+import SearchInput from '@components/shared/SearchInput'
 
-const StaffHeader = () => {
+type StaffHeaderProps = {
+  onChange: (value: string) => void
+}
+
+const StaffHeader = ({
+  onChange
+}: StaffHeaderProps) => {
 
   const activeOutlet = useStaffStore((state) => state.activeOutlet)
   const setActiveOutlet = useStaffStore((state) => state.setActiveOutlet)
@@ -80,10 +86,10 @@ const StaffHeader = () => {
           </LinkButton>
         </header>
         <header className="flex items-center justify-between h-20 px-6 border-t border-gray-200">
-          <Button variant="secondary" className="gap-2">
-            <FilterLinesIcon className="w-5 h-5 stroke-2 stroke-gray-700" />
-            Filters
-          </Button>
+          <SearchInput 
+            onChange={onChange}
+            placeholder={`Search ${activeOutlet === "Dentist" ? "dentists" : "assistants"}...`}
+          />
           <Button 
             variant="primary"
             onClick={activeOutlet === "Dentist" ? handleOpenAddDentistDrawer: handleOpenAddAssistantDrawer}
