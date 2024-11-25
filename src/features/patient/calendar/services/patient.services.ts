@@ -40,3 +40,12 @@ export const cancelAppointment = async (appointmentId: string) => {
     console.log(error)
   }
 }
+
+export const getAppointmentReview = async (appointmentId: string) => {
+  try {
+    const res = await privateApiClient.get(`/review/v1/get-appointment-review/${appointmentId}`)
+    return res.data
+  } catch (error) {
+    console.log(error)
+  }
+}
