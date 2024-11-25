@@ -30,7 +30,13 @@ const header = [
   },
 ]
 
-const DentistDataTable = () => {
+type DentistDataTableProps = {
+  searchValue: string
+}
+
+const DentistDataTable = ({
+  searchValue
+}: DentistDataTableProps) => {
 
 
   const { data, isLoading } = useQuery<IDentistResponse[]>(
@@ -46,6 +52,15 @@ const DentistDataTable = () => {
 
   const gridTemplate = "20% 20% 25% 15% 15% 5%"
 
+  const filteredDentists = data?.filter((dentist) => {
+    return (
+      dentist.dentistFullName.toLowerCase().includes(searchValue.toLowerCase()) ||
+      dentist.dentistCredentialId.credentialEmail.toLowerCase().includes(searchValue.toLowerCase()) ||
+      dentist.dentistCredentialId.credentialPhoneNumber.toLowerCase().includes(searchValue.toLowerCase()) ||
+      dentist.dentistAddress.toLowerCase().includes(searchValue.toLowerCase()) ||
+      dentist.dentistSpecialization.toLowerCase().includes(searchValue.toLowerCase()) 
+    )
+  })
 
 
   return (
@@ -57,7 +72,7 @@ const DentistDataTable = () => {
       onPageChange={() => {}}
       totalPages={0}
     >
-      {data?.map((dentist, index) => (
+      {filteredDentists?.map((dentist, index) => (
         <Fragment key={index}>
           <DentistRow 
             dentist={dentist}
