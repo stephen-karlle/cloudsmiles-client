@@ -8,6 +8,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import { cancelBill } from '../../services/payment.services';
 import { getSelectedPaymentMethod } from '../../constants/payment.constants';
 import { isNew } from '@utils/date.utils';
+import { createActivity } from '@features/admin/activities/services/activity.services';
+import { useUserStore } from '@stores/user.store';
 import Avatar from '@components/ui/Avatar'
 import PhilippinePesoIcon from '@icons/linear/PhilippinePesoIcon';
 import PopOver from '@components/ui/PopOver';
@@ -31,7 +33,7 @@ const PaymentRow = ({
 }: IPatientRow ) => {
 
   console.log(payment)
-
+  const user = useUserStore((state) => state.user);
   const queryClient = useQueryClient();
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
   const [ isLoading, setIsLoading ] = useState<boolean>(false);
@@ -73,6 +75,13 @@ const PaymentRow = ({
     setIsLoading(true);
 
     try {
+      if (user.role === "assistant") {
+        await createActivity({
+          activityAssistantId: user._id,
+          activityDescription: `Bill for Payment ${payment.paymentSerialId} has been cancelled.`,
+          activityAction: "Delete",
+        })
+      }
       await cancelBill(appointment._id ,selectedPaymentMethod);
       queryClient.invalidateQueries({queryKey: ['paymentQrCode']});
     } catch (error) {
@@ -190,11 +199,6 @@ const PaymentRow = ({
             <EditIcon className="stroke-2 stroke-gray-500 w-4 h-4 " />
             Edit
           </button>
-          <button type="button" className="px-4 hover:bg-gray-50 w-full py-1 text-base text-start text-gray-700 flex items-center gap-2">
-            {/* <RestockIcon className="stroke-2 stroke-gray-500 w-4 h-4 " /> */}
-            Print
-          </button>
-
         </PopOver>
       </TableData>
     </TableRow>
