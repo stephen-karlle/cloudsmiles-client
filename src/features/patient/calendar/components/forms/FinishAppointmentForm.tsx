@@ -16,6 +16,8 @@ import Label from '@components/ui/Label'
 import PhilippinePesoIcon from '@icons/linear/PhilippinePesoIcon'
 import MoneyIcon from '@icons/linear/MoneyIcon'
 import TreatmentIcon from '@icons/linear/TreatmentIcon'
+import { useQuery } from '@tanstack/react-query'
+import { getAppointmentReview } from '../../services/patient.services'
 
 const FinishAppointmentForm = () => {
 
@@ -37,9 +39,18 @@ const FinishAppointmentForm = () => {
     }, 300)
   }
 
+  const { data: isRated, isLoading: isRatingLoading } = useQuery({
+    queryKey: ["appointmentRatings", selectedAppointment.appointmentData._id],
+    queryFn: async () => {
+      const data = await getAppointmentReview(selectedAppointment.appointmentData._id);
+      return data;
+    },
+  });
+
+
   const { data: treatmentCost, isLoading } = useTreatmentCosts(selectedAppointment.appointmentData._id)
 
-  if (isLoading) return <div>Loading...</div>
+  if (isLoading || isRatingLoading) return <div>Loading...</div>
 
 
   const totalTreatments = (treatmentCost?.tooth?.length || 0) + (treatmentCost?.section?.length || 0) + (treatmentCost?.general?.length || 0)
@@ -177,17 +188,19 @@ const FinishAppointmentForm = () => {
         <Button 
           variant="secondary"
           onClick={() => setDrawerOpen(false)}
-          className="w-1/2"
+          className="w-full"
         >
           Close
         </Button>
-        <Button
-          variant="primary"
-          className="w-full"
-          onClick={handleOpenRating}
-        >
-          Rate Us
-        </Button>
+        {!isRated && (
+          <Button
+            variant="primary"
+            className="w-full"
+            onClick={handleOpenRating}
+          >
+            Rate Us
+          </Button>
+        )}
       </section>
     </article>
   )
