@@ -1,10 +1,10 @@
-import { TableData, TableRow } from '@components/ui/DataTable';
-import { ActivityType } from '../../types/activity.types';
-import Avatar from '@components/ui/Avatar';
-import { isNew } from '@utils/date.utils';
-import ClockIcon from '@icons/linear/ClockIcon';
 import { formatTime, getActionClasses } from '../../utils/activity.utils';
 import { formatISODateWithStringWithSuffix } from '@features/shared/calendar/utils/calendar.utils';
+import { TableData, TableRow } from '@components/ui/DataTable';
+import { ActivityType } from '../../types/activity.types';
+import { isNew } from '@utils/date.utils';
+import Avatar from '@components/ui/Avatar';
+import ClockIcon from '@icons/linear/ClockIcon';
 
 interface IActivityRow{
   activity: ActivityType;
@@ -28,6 +28,11 @@ const ActivityRow = ({
       key={index}
       gridTemplateColumns={gridTemplate}   
     >
+      <TableData className="w-full items-center flex justify-start">
+        <p className="text-gray-700">
+          #{activity.activitySerialId}
+        </p>
+      </TableData>
       <TableData
         className="flex items-start gap-4 "
       >
@@ -49,7 +54,7 @@ const ActivityRow = ({
           </label>
         </div>
       </TableData>
-      <TableData className="w-full items-center flex justify-start">
+      <TableData className="w-full items-center flex justify-start gap-4">
         <p className="text-gray-500">
           {activity.activityDescription}
         </p>
