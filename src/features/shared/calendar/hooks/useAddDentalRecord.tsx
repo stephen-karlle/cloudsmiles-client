@@ -6,8 +6,13 @@ import { useViewAppointmentStore } from "../stores/appointment.stores";
 import { useMutation } from "@tanstack/react-query";
 import { addDentalRecord } from "../services/patient.services";
 import { useCalendarStore } from "../stores/calendar.stores";
+import { useUserStore } from "@stores/user.store";
+import { createActivity } from "@features/admin/activities/services/activity.services";
 
 const useAddDentalRecord = () => {
+
+  const user = useUserStore((state) => state.user);
+
   const selectedAppointment = useViewAppointmentStore((state) => state.selectedAppointment);
   const setSelectedAppointment = useViewAppointmentStore((state) => state.setSelectedAppointment);
   const setViewActiveSheets = useViewAppointmentStore((state) => state.setViewActiveSheets);
@@ -80,7 +85,17 @@ const useAddDentalRecord = () => {
   });
 
   const onSubmit: SubmitHandler<DentalRecordType> = async (data) => {
+
+    if (user.role === "assistant") {
+      await createActivity({
+        activityAssistantId: user._id,
+        activityDescription: `Dental record for ${patient.patientFullName} has been edited.`,
+        activityAction: "Update",
+      })
+    }
+
     mutation.mutate(data);
+
   };
 
   return {
