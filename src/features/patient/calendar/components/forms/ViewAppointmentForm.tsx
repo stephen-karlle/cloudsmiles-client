@@ -1,9 +1,13 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { formatISODateWithStringWithSuffix } from "@features/shared/calendar/utils/calendar.utils";
+import { cancelAppointment, getBills } from "../../services/patient.services";
 import { DentalCheckupResponseType } from "@features/shared/calendar/types/appointment.types";
 import { convertPatientCheckups } from "@features/shared/calendar/utils/converter.utils";
 import { getAppointmentCheckup } from "@features/shared/calendar/services/calendar.services";
+import { getTreatmentCost } from "@features/shared/calendar/services/treatment.services";
 import { usePatientStore } from "../../stores/patient.store";
 import { useDrawerStore } from "@stores/drawer.store";
+import { toast } from "sonner";
 import CloseIcon from "@icons/linear/CloseIcon";
 import AppointmentStep from "../steps/AppointmentStep";
 import Stepper from "@components/ui/Stepper";
@@ -12,9 +16,8 @@ import Document1Icon from "@icons/linear/Document1Icon";
 import MoneyIcon from "@icons/linear/MoneyIcon";
 import CheckupStep from "../steps/CheckupStep";
 import Button from "@components/ui/Button";
-import { getTreatmentCost } from "@features/shared/calendar/services/treatment.services";
 import PaymentStep from "../steps/PaymentStep";
-import { getBills } from "../../services/patient.services";
+import Toast from "@components/ui/Toast";
 
 const appointmentStepsConstants = [
   { icon: CalendarIcon, title: "Appointment" },
@@ -57,12 +60,12 @@ const ViewAppointmentForm = () => {
     }
   };
 
-  const { data: checkup, isLoading } = useQuery({
+  const { data:checkup, isLoading } = useQuery({
     queryKey: ["appointmentPatientCheckupData"],
     queryFn: fetchCheckupData,
   });
 
-  const { data:treatmentCost , isLoading: isPaymentLoading } = useQuery({
+  const { data:treatmentCost, isLoading: isPaymentLoading } = useQuery({
     queryKey:["appointmentTreatmentCost"],
     queryFn: async () => {
       const data = await getTreatmentCost(selectedAppointment.appointmentData._id )
@@ -77,14 +80,29 @@ const ViewAppointmentForm = () => {
       return data;
     },
   });
-  
 
+  const mutation = useMutation({
+    mutationFn: () => cancelAppointment(appointmentData._id),
+    onSuccess: () => {
+      setDrawerOpen(false)
+      queryClient.invalidateQueries({queryKey: ['patientAppointmentsData']});
+      toast.custom(() => (
+        <Toast title={appointmentData.appointmentSerialId} message="has been deleted" subtitle={formatISODateWithStringWithSuffix(appointmentData.appointmentDate.start)} status="success"/>
+      ),{duration:5000});    
+    }
+  })
+
+  const handleCancelAppointment = async () => {
+    mutation.mutate()
+  }
+  
   const hasGeneralCheckup = Array.isArray(checkup?.checkupData?.generalCheckup) && checkup.checkupData.generalCheckup.length > 0;
   const hasSectionCheckup = Array.isArray(checkup?.checkupData?.sectionCheckup) && checkup.checkupData.sectionCheckup.length > 0;
   const hasToothCheckup = Array.isArray(checkup?.checkupData?.toothCheckup) && checkup.checkupData.toothCheckup.length > 0;
 
   const isDone = hasGeneralCheckup || hasSectionCheckup || hasToothCheckup;
-  const isButtonDisabled = !isDone || isLoading || isPaymentLoading || isBillsLoading
+  const isButtonDisabled = isLoading || isPaymentLoading || isBillsLoading
+  const isCancelled = appointmentData?.appointmentStatus === "Cancelled";
 
   return (
     <article className="flex flex-col w-full h-full">
@@ -107,27 +125,40 @@ const ViewAppointmentForm = () => {
       </section>
 
       {/* Content Section */}
-      <section className={`flex flex-col w-full h-full gap-4 overflow-hidden 
+      <section 
+        className={`flex flex-col w-full h-full gap-4 overflow-hidden 
           ${step === 3 && "rounded-b-3xl"}
-        `}>
+        `}
+      >
         {step === 1 && <AppointmentStep agreementDocuments={checkup?.agreementDocuments as any} />}
         {step === 2 && checkup && <CheckupStep checkup={checkup} />}
         {step === 3 && treatmentCost && <PaymentStep treatmentCost={treatmentCost} bills={bills} />}
       </section>
 
       {/* Footer Section */}
-      {step !== 3 &&
+      {!isCancelled && step !== 3 && (
         <section className="flex flex-col gap-6 w-full px-6 flex-1 items-end justify-end p-6 border-t border-gray-200">
-          <Button
-            variant={isButtonDisabled ? "disabled" : "primary"}
-            disabled={isButtonDisabled}
-            className="w-full"
-            onClick={() => setStep(step + 1)}
-          >
-            {isButtonDisabled ? "Waiting" : "Proceed"}
-          </Button>
+          {isDone ? 
+            <Button
+              variant={isButtonDisabled ? "disabled" : "primary"}
+              disabled={isButtonDisabled}
+              className="w-full"
+              onClick={() => setStep(step + 1)}
+            >
+              Proceed
+            </Button>
+          : 
+            <Button
+              variant={isButtonDisabled || mutation.isPending? "disabled" : "danger"}
+              disabled={isButtonDisabled || mutation.isPending}
+              className="w-full"
+              onClick={handleCancelAppointment}
+            >
+              Cancel
+            </Button>
+          }
         </section>
-        }
+      )}
     </article>
   );
 };
