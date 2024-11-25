@@ -5,11 +5,14 @@ import { PaymentRequestType } from "@features/shared/calendar/types/appointment.
 import { PayPartiallySchema } from "../schemas/payment.schema";
 import { usePaymentStore } from "../stores/payment.store";
 import { toast } from "sonner";
+import { useUserStore } from "@stores/user.store";
 import { partiallyPayWithCash } from "../services/payment.services";
 import Toast from "@components/ui/Toast";
+import { createActivity } from "@features/admin/activities/services/activity.services";
 
 
 const usePayPartially = () => {
+  const user = useUserStore((state) => state.user);
   const queryClient = useQueryClient()
   const selectedPayment = usePaymentStore((state) => state.selectedPayment)
   const totalCost = selectedPayment.paymentTotalCost
@@ -53,6 +56,14 @@ const usePayPartially = () => {
   });
   
   const onSubmit = async (data: PaymentRequestType) => {
+    if (user.role === "assistant") {
+      await createActivity({
+        activityAssistantId: user._id,
+        activityDescription: `Payment for Appointment-${selectedPayment.paymentAppointmentId.appointmentSerialId} has been updated.`,
+        activityAction: "Create",
+      })
+    }
+
     closeCards()
     const historyBalance = selectedPayment.paymentHistory.map((history) => history.paymentAmount).reduce((acc, cost) => acc + cost, 0)
     const totalCost = selectedPayment.paymentTotalCost
