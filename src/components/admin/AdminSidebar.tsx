@@ -12,6 +12,7 @@ import BankIcon from "@icons/linear/BankIcon"
 import GridIcon from "@icons/linear/Gridicon"
 import BuildingIcon from "@icons/linear/BuildingIcon"
 import BeakerIcon from "@icons/linear/BeakerIcon"
+import ActivityIcon from "@icons/linear/ActivityIcon"
 
 
 const AdminSidebar = () => {
@@ -29,6 +30,7 @@ const AdminSidebar = () => {
     '/payment': 'Payment',
     '/vendors': 'Vendors',
     '/settings': 'Settings',
+    '/activities': 'Activities',
   };
 
   const activePage = pageNames[location.pathname] || 'dashboard';
@@ -72,7 +74,6 @@ const AdminSidebar = () => {
           <SideBarButton icon={<TreatmentIcon />} name="Treatment" activePage={activePage} setActivePage={setActivePage}/>
 
         </div>
-        {/* Chatbot */}
         {/* Finance */}
         <div className="w-full flex flex-col items-start justify-start mt-2">
           <label className="text-xs font-medium tracking-widest text-gray-500 mb-1 ">FINANCE</label>
@@ -80,11 +81,19 @@ const AdminSidebar = () => {
           <SideBarButton icon={<BeakerIcon />} name="Stocks" activePage={activePage} setActivePage={setActivePage}/>
           <SideBarButton icon={<BankIcon />} name="Vendors" activePage={activePage} setActivePage={setActivePage}/>
         </div>
+      
+        {/* Audit Trail  */}
+        <div className="w-full flex flex-col items-start justify-start mt-2">
+          <label className="text-xs font-medium tracking-widest text-gray-500 mb-1 ">AUDIT TRAIL</label>
+          <SideBarButton icon={<ActivityIcon />} name="Activities" activePage={activePage} setActivePage={setActivePage}/>
+        </div>
 
+        {/* Chatbot */}
         <div className="w-full flex flex-col items-start justify-start mt-2">
           <label className="text-xs font-medium tracking-widest text-gray-500 mb-1 ">CHATBOT</label>
           <SideBarButton icon={<BulbIcon />} name="Knowledge" activePage={activePage} setActivePage={setActivePage}/>
         </div>
+
       </section>
       <section className="p-6 flex flex-col items-start justify-start gap-1 w-full">
         <label className="text-xs font-medium tracking-wider text-gray-500">POWERED BY</label>
