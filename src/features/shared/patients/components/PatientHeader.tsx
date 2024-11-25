@@ -6,10 +6,16 @@ import TableHeaderSkeleton from '@components/shared/skeletons/TableHeaderSkeleto
 import UserIcon from '@icons/linear/UserIcon';
 import PlusIcon from '@icons/linear/PlusIcon';
 import Button from '@components/ui/Button';
-import FilterLinesIcon from '@icons/linear/FilterLinesIcon';
 import AddNewPatientForm from './forms/AddNewPatientForm';
+import SearchInput from '@components/shared/SearchInput';
 
-const PatientHeader = () => {
+type PatientHeaderProps = {
+  onChange: (value: string) => void
+}
+
+const PatientHeader = ({
+  onChange
+}: PatientHeaderProps) => {
   const setPatientDrawerOpen = usePatientStore((state) => state.setPatientDrawerOpen)
   const setMainSheet = usePatientStore((state) => state.setMainSheet)
   const { data: patientCount, isLoading } = useQuery({
@@ -55,10 +61,10 @@ const PatientHeader = () => {
           </LinkButton>
         </header>
         <header className="flex items-center justify-between h-20 px-6 border-t border-gray-200">
-          <Button variant="secondary" className="gap-2">
-            <FilterLinesIcon className="w-5 h-5 stroke-2 stroke-gray-700" />
-            Filters
-          </Button>
+          <SearchInput 
+            onChange={onChange}
+            placeholder="Search patients..."
+          />
           <Button 
             variant="primary"
             onClick={handleOpenAddNewPatientDrawer}
