@@ -105,7 +105,7 @@ const ContextRow = ({
         </label>
       </TableData>
       <TableData className="flex items-start gap-4">
-        <label className="text-sm text-gray-500 line-clamp-2 max-w-[90%]">
+        <label className="text-sm text-gray-500 line-clamp-1 max-w-[90%]">
           {context.contextData}
         </label>
       </TableData>
