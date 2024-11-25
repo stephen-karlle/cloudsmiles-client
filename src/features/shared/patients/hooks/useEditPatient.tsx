@@ -6,10 +6,12 @@ import { toast } from "sonner";
 import { usePatientStore } from "../stores/patient.store";
 import { PatientRequestType } from "../types/patient.types";
 import { updatePatient } from "../services/patient.services";
+import { createActivity } from "@features/admin/activities/services/activity.services";
+import { useUserStore } from "@stores/user.store";
 import Toast from "@components/ui/Toast";
 
 const useEditPatient = () => {
-
+  const user = useUserStore((state) => state.user);
   const queryClient = useQueryClient();
   const setPatientDrawerOpen = usePatientStore((state) => state.setPatientDrawerOpen)
   const setIsLoading = usePatientStore((state) => state.setIsLoading)
@@ -58,6 +60,13 @@ const useEditPatient = () => {
   });
   
   const onSubmit: SubmitHandler<PatientRequestType> = async (data) => {
+    if (user.role === "assistant") {
+      await createActivity({
+        activityAssistantId: user._id,
+        activityDescription: `Patient details for ${data.patientFullName} has been updated.`,
+        activityAction: "Create",
+      })
+    }
     mutation.mutate(data);
   };
 
