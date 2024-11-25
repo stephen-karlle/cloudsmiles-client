@@ -2,14 +2,20 @@ import { useQuery } from "@tanstack/react-query";
 import { getVendorCount } from "../services/vendor.services";
 import { useDrawerStore } from "@stores/drawer.store"
 import Button from "@components/ui/Button"
-import FilterLinesIcon from "@icons/linear/FilterLinesIcon"
 import PlusIcon from "@icons/linear/PlusIcon"
 import LinkButton from "@components/shared/LinkButton";
 import TableHeaderSkeleton from "@components/shared/skeletons/TableHeaderSkeleton";
 import NewVendorForm from "./forms/NewVendorForm";
 import BuildingIcon from "@icons/linear/BuildingIcon";
+import SearchInput from "@components/shared/SearchInput";
 
-const VendorHeader = () => {
+type VendorHeaderProps = ({
+  onChange: (value: string) => void
+})
+
+const VendorHeader = ({
+  onChange
+}: VendorHeaderProps) => {
 
   const setStaffDrawerOpen = useDrawerStore((state) => state.setDrawerOpen)
   const setMainSheet = useDrawerStore((state) => state.setMainSheet)
@@ -63,10 +69,10 @@ const VendorHeader = () => {
           </LinkButton>
         </header>
         <header className="flex items-center justify-between h-20 px-6 border-t border-gray-200">
-          <Button variant="secondary" className="gap-2">
-            <FilterLinesIcon className="w-5 h-5 stroke-2 stroke-gray-700" />
-            Filters
-          </Button>
+          <SearchInput 
+            placeholder='Search vendors...' 
+            onChange={onChange}
+          />
           <Button 
             variant="primary"
             onClick={handleOpenDrawer}
