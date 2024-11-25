@@ -7,7 +7,6 @@ import { pdf } from "@react-pdf/renderer"
 import Button from "@components/ui/Button"
 import BarChart from "../charts/BarChart"
 import FilterButton from "../inputs/FilterButton"
-import PhilippinePesoIcon from "@icons/linear/PhilippinePesoIcon"
 import PrintIcon from "@icons/linear/PrintIcon"
 import PaymentDocument from "../documents/PaymentDocument"
 
