@@ -7,6 +7,8 @@ import { useDrawerStore } from '@stores/drawer.store';
 import { useVendorStore } from '@features/shared/vendors/stores/vendor.store';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteVendor } from '@features/shared/vendors/services/vendor.services';
+import { createActivity } from '@features/admin/activities/services/activity.services';
+import { useUserStore } from '@stores/user.store';
 import { toast } from 'sonner';
 import ThreeDotsIcon from '@icons/linear/ThreeDotsIcon';
 import PopOver from '@components/ui/PopOver';
@@ -30,7 +32,7 @@ const VendorRow = ({
   gridTemplate,
 }: VendorRowProps ) => {
    
-
+  const user = useUserStore((state) => state.user)
   const queryClient = useQueryClient()
   const anchorRef = useRef<HTMLButtonElement | null>(null);
   const [ isDeleteModalOpen, setIsDeleteModalOpen ] = useState<boolean>(false);
@@ -59,6 +61,18 @@ const VendorRow = ({
     toggleDrawer(vendor.vendorSerialId);
   }
 
+  const handleDelete = async () => {
+    mutation.mutate();
+    if (user.role === "assistant") {
+      await createActivity({
+        activityAssistantId: user._id,
+        activityDescription: `Vendor ${vendor.vendorCompanyName} has been permanently removed.`,
+        activityAction: "Delete",
+      })
+    }
+  }
+  
+
   return (
     <TableRow 
       index={index}
@@ -73,7 +87,7 @@ const VendorRow = ({
         title="Delete Vendor"
         message="This action cannot be undone. This will permanently delete your vendor from our servers."
         confirmation={`DELETE ${vendor.vendorCompanyName}`}
-        handleSubmit={mutation.mutate}
+        handleSubmit={handleDelete}
         isLoading={mutation.isPending}
       />
       <Drawer
