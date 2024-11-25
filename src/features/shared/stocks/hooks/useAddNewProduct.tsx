@@ -8,10 +8,12 @@ import { useMutation } from "@tanstack/react-query";
 import { createProduct, validateSku } from "../services/product.services";
 import { useDrawerStore } from "@stores/drawer.store";
 import { useStocksStore } from "../stores/stocks.store";
+import { createActivity } from "@features/admin/activities/services/activity.services";
+import { useUserStore } from "@stores/user.store";
 import Toast from "@components/ui/Toast";
 
 const useAddNewProduct = () => {
-
+  const user = useUserStore((state) => state.user);
   const queryClient = useQueryClient();
   const setDrawerOpen = useDrawerStore((state) => state.setDrawerOpen);
   const setIsLoading = useStocksStore((state) => state.setIsLoading)
@@ -61,7 +63,6 @@ const useAddNewProduct = () => {
 
 
   const onSubmit: SubmitHandler<ProductRequestType> = async (data) => {
-    
     const isSkuValid = await validateSku(data.productSku);
     if (!isSkuValid) {
       methods.setError('productSku', {
@@ -70,7 +71,13 @@ const useAddNewProduct = () => {
       });
       return;
     }
-
+    if (user.role === "assistant") {
+      await createActivity({
+        activityAssistantId: user._id,
+        activityDescription: `Product detials for ${data.productName} has been added.`,
+        activityAction: "Create",
+      })
+    }
     mutation.mutate(data);
   };
 
