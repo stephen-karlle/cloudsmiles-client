@@ -8,7 +8,10 @@ import { useAdminStore } from "@stores/admin/admin.store";
 import { useWeekDentist } from '../../services/state/useWeekDentist';
 import { useViewAppointmentStore, usePaymentAppointmentStore} from '../../stores/appointment.stores';
 import { generateDayGridCol, generateMonthGridCol, generateWeekGridCol } from '../../utils/calendar.utils';
-import { Fragment } from "react/jsx-runtime";
+import { useUserStore } from "@stores/user.store";
+import { Fragment } from "react";
+import { createActivity } from "@features/admin/activities/services/activity.services";
+
 import { useMonthlyDentist } from "../../services/state/useMonthlyDentist";
 import CalendarHeader from '../CalendarHeader';
 import DaySubHeader from '../scheduler/subheaders/DaySubHeader'
@@ -27,6 +30,8 @@ import MonthColumns from "../scheduler/columns/MonthColumns";
 
 
 const CalendarOutlet = () => {
+
+  const user = useUserStore((state) => state.user);
   const queryClient = useQueryClient();
   const { data: dayDentists } = useDayDentist()
   const { data: weekDentists } = useWeekDentist()
@@ -62,6 +67,13 @@ const CalendarOutlet = () => {
     const selectedPaymentMethod = getSelectedPaymentMethod(cardStates);
     setIsLoading(true);
     try {
+      if (user.role === "assistant") {
+        await createActivity({
+          activityAssistantId: user._id,
+          activityDescription: `Bill for Payment ${selectedAppointment.appointmentData.appointmentSerialId} has been cancelled.`,
+          activityAction: "Delete",
+        })
+      }
       await cancelBill(appointment._id ,selectedPaymentMethod);
       queryClient.invalidateQueries({queryKey: ['appointmentPaymentQrCode']});
       
