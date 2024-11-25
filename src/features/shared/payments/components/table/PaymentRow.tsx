@@ -1,7 +1,7 @@
 import { formatISODateWithStringWithSuffix } from '@features/shared/calendar/utils/calendar.utils';
 import { TableData, TableRow } from '@components/ui/DataTable';
 import { PaymentResponseType } from '../../types/payment.types';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { usePaymentStore } from '../../stores/payment.store';
 import { getPaymentStatus, getStatusStyle } from '../../utils/color.utils';
 import { useQueryClient } from '@tanstack/react-query';
@@ -12,12 +12,10 @@ import { createActivity } from '@features/admin/activities/services/activity.ser
 import { useUserStore } from '@stores/user.store';
 import Avatar from '@components/ui/Avatar'
 import PhilippinePesoIcon from '@icons/linear/PhilippinePesoIcon';
-import PopOver from '@components/ui/PopOver';
-import ThreeDotsIcon from '@icons/linear/ThreeDotsIcon';
-import EditIcon from '@icons/linear/EditIcon';
 import Drawer from '@components/ui/Drawer';
 import ViewPaymentForm from '../forms/ViewPaymentForm';
 import DeleteModal from '@components/ui/DeleteModal';
+import Button from '@components/ui/Button';
 
 interface IPatientRow{
   payment: PaymentResponseType;
@@ -35,7 +33,6 @@ const PaymentRow = ({
   console.log(payment)
   const user = useUserStore((state) => state.user);
   const queryClient = useQueryClient();
-  const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
   const [ isLoading, setIsLoading ] = useState<boolean>(false);
   const isPaymentDrawerOpen = usePaymentStore((state) => state.drawerStates[payment.paymentSerialId] || false);
   const toggleDrawer = usePaymentStore((state) => state.toggleDrawer);
@@ -49,7 +46,6 @@ const PaymentRow = ({
   const clearPaymentSteps = usePaymentStore((state) => state.clearPaymentSteps);
   const cardStates = usePaymentStore((state) => state.cardStates);
 
-  const buttonRef = useRef<HTMLButtonElement>(null);
   const patient = payment.paymentAppointmentId.appointmentPatientId
   const appointment = payment.paymentAppointmentId
   const totalAmount = payment.paymentTotalCost
@@ -175,31 +171,13 @@ const PaymentRow = ({
       <TableData
         className="flex justify-end gap-4 relative"
       >
-        <button 
-          ref={buttonRef}
-          className=""
-          onClick={()=>setIsPopoverOpen(!isPopoverOpen)}
+        <Button
+          variant= "secondary"
+          className="px-4"
+          onClick={handleViewPayment}
         >
-          <ThreeDotsIcon className="w-5 h-5 stroke-2 stroke-gray-500 fill-gray-500 -rotate-90" />
-        </button>
-        <PopOver 
-          anchorRef={buttonRef}
-          isOpen={isPopoverOpen}
-          onClose={() => {
-            setIsPopoverOpen(false);
-          }}              
-          className=" top-12 -right-0 w-28 py-2 flex flex-col h-fit"
-          position='bottom'
-        >
-          <button 
-            type="button" 
-            className="px-4 hover:bg-gray-50 w-full py-1 text-base text-start text-gray-700 flex items-center gap-2"
-            onClick={handleViewPayment}
-          >
-            <EditIcon className="stroke-2 stroke-gray-500 w-4 h-4 " />
-            Edit
-          </button>
-        </PopOver>
+          View
+        </Button>
       </TableData>
     </TableRow>
   )
