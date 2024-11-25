@@ -91,17 +91,28 @@ const PayWithEWallet = ({ method, finish }: PayWithEWalletProps) => {
   }
 
   const handleCreateBill = () => {
-    if (!paymentType) return setError("paymentType", { message: "Payment type is required" })
-    if (!paymentDueDate ) return setError("paymentDueDate", { message: "Due date is required" })
-    if ( paymentAmount < 100) return setError("paymentAmount", { message: "For installment, 100 is the minimum required amount" })
-    if (paymentType === "Full" && paymentAmount < totalCost) {
-      return setError("paymentAmount", { message: "For full payment, amount must be equal to total cost" })
+    if (!paymentType) {
+      return setError("paymentType", { message: "Payment type is required" });
     }
-    setIsLoading(true)
-    const data = getValues() as PaymentRequestType
-    billMutation.mutate(data)
-  }
-
+  
+    if (paymentType === "Installment") {
+      if (!paymentDueDate) {
+        return setError("paymentDueDate", { message: "Due date is required for Installment payments" });
+      }
+      if (paymentAmount < 100) {
+        return setError("paymentAmount", { message: "For installment, 100 is the minimum required amount" });
+      }
+    }
+  
+    if (paymentType === "Full" && paymentAmount < totalCost) {
+      return setError("paymentAmount", { message: "For full payment, amount must be equal to total cost" });
+    }
+  
+    setIsLoading(true);
+    const data = getValues() as PaymentRequestType;
+    billMutation.mutate(data);
+  };
+  
   const handleCheckBillStatus = () => {
     if (timer > 0) return
     statusMutation.mutate()
