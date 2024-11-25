@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { createReview } from "../../services/patient.services"
 import { useDrawerStore } from "@stores/drawer.store"
 import { usePatientStore } from "../../stores/patient.store"
@@ -13,7 +13,7 @@ import Label from "@components/ui/Label"
 import MotionNumber from 'motion-number'
 
 const RateAppointmentForm = () => {
-
+  const queryClient = useQueryClient()
   const selectedAppointment = usePatientStore((state) => state.selectedAppointment)
   const setExtraDrawerOpen = useDrawerStore((state) => state.setExtraDrawerOpen)
   const setDrawerOpen = useDrawerStore((state) => state.setDrawerOpen)
@@ -46,6 +46,7 @@ const RateAppointmentForm = () => {
     },
     onSuccess: () => {
       setExtraDrawerOpen(false)
+      queryClient.removeQueries({queryKey: ["appointmentRatings"]})
     }
   });
   
