@@ -35,10 +35,16 @@ const header = [
   },
 ]
 
-const PaymentDataTable = () => {
+type PaymentDataTableProps = {
+  searchValue: string
+}
+
+const PaymentDataTable = ({
+  searchValue
+}: PaymentDataTableProps) => {
 
 
-  const { data: payments, isLoading } = useQuery<PaymentResponseType[]>(
+  const { data, isLoading } = useQuery<PaymentResponseType[]>(
     {
       queryKey: ['paymentTableData'],
       queryFn: getPayments,
@@ -52,6 +58,15 @@ const PaymentDataTable = () => {
   const gridTemplate = "15% 20% 15% 15% 15% 10% auto"
 
 
+  const filteredPayments = data?.filter(payment => {
+    return (
+      payment.paymentAppointmentId.appointmentPatientId.patientFullName.toLowerCase().includes(searchValue.toLowerCase())|| 
+      payment.paymentAppointmentId.appointmentPatientId.patientAddress.toString().includes(searchValue.toLowerCase()) ||
+      payment.paymentAppointmentId.appointmentPatientId.patientSerialId.toString().includes(searchValue.toLowerCase())
+    )
+  })
+
+
 
   return (
     <DataTable
@@ -62,7 +77,7 @@ const PaymentDataTable = () => {
       onPageChange={() => {}}
       totalPages={0}
     >
-      {payments?.map((payment, index) => (
+      {filteredPayments?.map((payment, index) => (
         <Fragment key={index}>
           <PaymentRow 
             payment={payment}
