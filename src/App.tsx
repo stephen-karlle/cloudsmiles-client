@@ -36,6 +36,7 @@ import StaffStocksPage from '@pages/staff/StaffStocksPage';
 import StaffVendorPage from '@pages/staff/StaffVendorPage';
 import SettingsPage from '@pages/shared/SettingsPage';
 import StaffProfilePage from '@pages/staff/StaffPatientProfilePage';
+import AdminActivityPage from '@pages/admin/AdminActivityPage';
 
 
 const App = () => {
@@ -162,6 +163,7 @@ const App = () => {
             <Route path="/dashboard" element={<AdminDashboardPage />}/>
             <Route path="/staff" element={<AdminStaffPage />} />
             <Route path="/treatment" element={<AdminTreatmentPage />} />
+            <Route path="/activities" element={<AdminActivityPage />} />
             <Route path="/knowledge" element={<AdminKnowledgePage />} />
           </Route>
 
