@@ -29,7 +29,13 @@ const header = [
   },
 ]
 
-const AssistantDataTable = () => {
+type AssistantDataTableProps = {
+  searchValue: string
+}
+
+const AssistantDataTable = ({
+  searchValue
+}: AssistantDataTableProps) => {
 
 
   const { data, isLoading } = useQuery<AssistantResponseType[]>(
@@ -44,6 +50,15 @@ const AssistantDataTable = () => {
   const gridTemplate = "20% 20% 25% 15% 15% 5%"
 
 
+  const filteredAssistants = data?.filter((assistant) => {
+    return (
+      assistant.assistantFullName.toLowerCase().includes(searchValue.toLowerCase()) ||
+      assistant.assistantAddress.toLowerCase().includes(searchValue.toLowerCase()) ||
+      assistant.assistantCredentialId.credentialEmail.toLowerCase().includes(searchValue.toLowerCase()) ||
+      assistant.assistantCredentialId.credentialPhoneNumber.toLowerCase().includes(searchValue.toLowerCase()) || 
+      assistant.assistantRole.toLowerCase().includes(searchValue.toLowerCase())
+    )
+  })
 
   return (
     <DataTable 
@@ -54,7 +69,7 @@ const AssistantDataTable = () => {
       onPageChange={() => {}}
       totalPages={0}
     >
-      {data?.map((assistant, index) => (
+      {filteredAssistants?.map((assistant, index) => (
         <Fragment key={index}>
           <AssistantRow 
             assistant={assistant}
