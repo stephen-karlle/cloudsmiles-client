@@ -15,6 +15,7 @@ import Avatar from '@components/ui/Avatar';
 import DeleteModal from '@components/ui/DeleteModal';
 import ThreeDotsIcon from '@icons/linear/ThreeDotsIcon';
 import Toast from '@components/ui/Toast';
+import StarIcon from '@icons/linear/StarIcon';
 
 interface IDentistRow {
   dentist: IDentistResponse;
@@ -88,6 +89,12 @@ const DentistRow = ({
             <label className="text-sm text-gray-700">
               {dentist.dentistFullName}
             </label>
+            {dentist.dentistReviews > 0 && (
+              <div className="flex items-center">
+                <StarIcon className="w-4 h-4 stroke-2 stroke-yellow-500 fill-yellow-500 " />
+                <span className="text-sm text-gray-500 mr-1">{(dentist.dentistRatings).toFixed(1)}</span>
+              </div>
+            )}
             {isNew(dentist.createdAt) && 
               <span className="flex shrink-0 uppercase text-xs px-2 py-1 rounded-full bg-red-50 text-red-500">NEW</span>
             }
