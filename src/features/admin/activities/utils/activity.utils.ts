@@ -15,11 +15,11 @@ export const getActionClasses = (action: string) => {
     case 'Update':
       return 'text-purple-500 bg-purple-50';
     case 'Create':
-      return 'text-sky-500 bg-sky-50';
+      return 'text-emerald-500 bg-emerald-50';
     case 'Delete':
       return 'text-red-500 bg-red-50';
     case 'Read':
-      return 'text-emerald-500 bg-emerald-50';
+      return 'text-sky-500 bg-sky-50';
     default:
       return 'text-gray-500';
   }
