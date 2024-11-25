@@ -10,7 +10,6 @@ import BeakerIcon from '@icons/linear/BeakerIcon';
 import TableHeaderSkeleton from '@components/shared/skeletons/TableHeaderSkeleton';
 import AddNewProductForm from './forms/AddNewProductForm';
 import Button from '@components/ui/Button';
-import FilterLinesIcon from '@icons/linear/FilterLinesIcon';
 import PlusIcon from '@icons/linear/PlusIcon';
 import PurchaseOrderForm from './forms/PurchaseOrderForm';
 import SearchInput from '@components/shared/SearchInput';
