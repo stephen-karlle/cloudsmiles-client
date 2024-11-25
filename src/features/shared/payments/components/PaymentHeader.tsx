@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { getMonthlyRevenue } from '../services/payment.services'
+import { getPaymentCount } from '../services/payment.services'
 import LinkButton from '@components/shared/LinkButton'
 import PaymentGraph from './graphs/PaymentGraph'
 import TableHeaderSkeleton from '@components/shared/skeletons/TableHeaderSkeleton'
@@ -16,7 +16,7 @@ const PaymentHeader = ({
   const { data, isLoading } = useQuery(
     {
       queryKey: ['paymentsHeaderData'],
-      queryFn: getMonthlyRevenue,
+      queryFn: getPaymentCount,
     }
   );
 
