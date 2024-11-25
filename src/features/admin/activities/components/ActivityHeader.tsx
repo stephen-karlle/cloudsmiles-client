@@ -3,8 +3,15 @@ import TableHeaderSkeleton from '@components/shared/skeletons/TableHeaderSkeleto
 import ActivityIcon from '@icons/linear/ActivityIcon';
 import { getActivityCount } from '../services/activity.services';
 import { useQuery } from '@tanstack/react-query';
+import SearchInput from '@components/shared/SearchInput';
 
-const ActivityHeader = () => {
+type ActivityHeaderProps = ({
+  onChange: (value: string) => void
+}) 
+
+const ActivityHeader = ({
+  onChange
+}: ActivityHeaderProps) => {
 
   const { data: activityCount, isLoading} = useQuery(
     {
@@ -43,7 +50,10 @@ const ActivityHeader = () => {
           </LinkButton>
         </header>
         <header className="flex items-center justify-between h-20 px-6 border-t border-gray-200">
-
+          <SearchInput 
+            placeholder='Search activities...' 
+            onChange={onChange}
+          />
         </header>
       </section>
     )
