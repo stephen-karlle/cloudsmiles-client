@@ -22,6 +22,8 @@ export const dentistDefaultValues = {
   dentistScheduleId: {
     schedules: [],
   },
+  dentistRatings: 0,
+  dentistReviews: 0,
   startTime: "",
   endTime: "",
   createdAt: "",
