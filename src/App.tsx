@@ -6,7 +6,7 @@ import LandingPage from '@pages/auth/LandingPage';
 import LoginPage from '@pages/auth/LoginPage';
 import SignUpPage from '@pages/auth/SignUpPage';
 
-// Admin
+// Admins
 import AdminDashboardPage from '@pages/admin/AdminDashboardPage';
 import AdminCalendarPage from '@pages/admin/AdminCalendarPage';
 import AdminTreatmentPage from '@pages/admin/AdminTreatmentPage';
