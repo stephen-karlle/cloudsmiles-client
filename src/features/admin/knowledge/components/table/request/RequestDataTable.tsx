@@ -26,7 +26,13 @@ const header = [
   },
 ]
 
-const RequestDataTable= () => {
+type RequestDataTableProps = {
+  searchValue: string
+}
+
+const RequestDataTable= ({
+  searchValue
+}: RequestDataTableProps) => {
 
 
   const { data: requests, isLoading } = useQuery<RequestResponseType[]>(
@@ -43,6 +49,12 @@ const RequestDataTable= () => {
   const gridTemplate = "10% auto 10% 10% 5%"
 
 
+  const filteredRequests = requests?.filter((request) => {
+    return (
+      request.requestLabel.toString().includes(searchValue)
+    )
+  })
+
 
   return (
     <DataTable
@@ -54,7 +66,7 @@ const RequestDataTable= () => {
       totalPages={0}
     >
 
-      {requests?.map((request, index) => (
+      {filteredRequests?.map((request, index) => (
         <Fragment 
           key={index}
         >
