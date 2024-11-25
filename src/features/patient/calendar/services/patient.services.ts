@@ -31,3 +31,12 @@ export const createReview = async (data: ReviewType) => {
     console.log(error)
   }
 }
+
+export const cancelAppointment = async (appointmentId: string) => {
+  try {
+    const res = await privateApiClient.put(`/appointment/v1/cancel-appointment/${appointmentId}`)
+    return res.data
+  } catch (error) {
+    console.log(error)
+  }
+}
