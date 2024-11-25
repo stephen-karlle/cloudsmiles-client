@@ -34,7 +34,13 @@ const header = [
   },
 ]
 
-const PatientDataTable = () => {
+type PatientDataTableProps = {
+  searchValue: string
+}
+
+const PatientDataTable = ({
+  searchValue
+}: PatientDataTableProps) => {
 
 
   const { data: patients, isLoading } = useQuery<PatientResponseType[]>(
@@ -51,6 +57,15 @@ const PatientDataTable = () => {
   const gridTemplate = "20% 15% 20% auto 10% 10% 5%"
 
 
+  const filteredPatients = patients?.filter((patient) => {
+    return (
+      patient.patientFullName.toLowerCase().includes(searchValue.toLowerCase()) ||
+      patient.patientCredentialId.credentialEmail.toLowerCase().includes(searchValue.toLowerCase()) ||
+      patient.patientCredentialId.credentialPhoneNumber.toLowerCase().includes(searchValue.toLowerCase()) ||
+      patient.patientAddress.toLowerCase().includes(searchValue.toLowerCase())
+    )
+  })
+
 
   return (
     <DataTable
@@ -61,7 +76,7 @@ const PatientDataTable = () => {
       onPageChange={() => {}}
       totalPages={0}
     >
-      {patients?.map((patient, index) => (
+      {filteredPatients?.map((patient, index) => (
         <Fragment key={index}>
           <PatientRow 
             patient={patient}
