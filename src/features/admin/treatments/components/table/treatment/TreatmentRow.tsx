@@ -1,5 +1,5 @@
 import { ITreatmentDataResponse, TreatmentRequestType } from '@features/admin/treatments/types/treatment.types';
-import { useRef, useState } from 'react';
+import { Fragment, useRef, useState } from 'react';
 import { TableData, TableRow } from '@components/ui/DataTable';
 import { deleteTreatment } from '@features/admin/treatments/services/treatment.services';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -13,6 +13,7 @@ import PopOver from '@components/ui/PopOver';
 import DeleteModal from '@components/ui/DeleteModal';
 import Toast from '@components/ui/Toast';
 import ClockIcon from '@icons/linear/ClockIcon';
+import StarIcon from '@icons/linear/StarIcon';
 
 interface IInventoryRow {
   treatment: ITreatmentDataResponse;
@@ -106,8 +107,20 @@ const TreatmentRow = ({
         </span>
 
       </TableData>
-      <TableData>No Rating</TableData>
-      <TableData>0 Reviews</TableData>
+      <TableData className="flex items-center gap-1">
+        {treatment.treatmentRatings > 0 ? (
+          <Fragment>
+            <StarIcon className="w-4 h-4 stroke-2 stroke-yellow-500 fill-yellow-500" />
+            <span className="text-sm text-gray-700">{(treatment.treatmentRatings).toFixed(1)}</span>
+          </Fragment>
+        ) : (
+          <span className="text-sm text-gray-700">No ratings</span>
+        )}
+
+      </TableData>
+      <TableData>
+        <span className="text-sm text-gray-700">{treatment.treatmentReviews + " Reviews"}</span>
+      </TableData>
 
 
       <TableData
