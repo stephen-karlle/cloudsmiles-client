@@ -6,10 +6,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createVendor } from "../services/vendor.services";
 import { toast } from "sonner";
 import { useDrawerStore } from "@stores/drawer.store";
+import { createActivity } from "@features/admin/activities/services/activity.services";
+import { useUserStore } from "@stores/user.store";
 import Toast from "@components/ui/Toast";
 
 const useAddVendor = () => {
-
+  const user = useUserStore((state) => state.user);
   const queryClient = useQueryClient();
   const setIsLoading = useDrawerStore((state) => state.setIsLoading);
   const setDrawerOpen = useDrawerStore((state) => state.setDrawerOpen);
@@ -56,6 +58,13 @@ const useAddVendor = () => {
 
 
   const onSubmit: SubmitHandler<VendorRequestType> = async (data) => {
+    if (user.role === "assistant") {
+      await createActivity({
+        activityAssistantId: user._id,
+        activityDescription: `Vendor details for ${data.vendorCompanyName} has been added.`,
+        activityAction: "Create",
+      })
+    }
     mutation.mutate(data);
   };
 
