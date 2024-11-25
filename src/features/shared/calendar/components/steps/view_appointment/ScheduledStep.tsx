@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { usePaymentAppointmentStore, useViewAppointmentStore } from '@features/shared/calendar/stores/appointment.stores';
 import { convertISOStringToFullDate, convertISOStringToShortDate, convertISOStringToTime } from '@utils/date.utils';
+import { useUserStore } from '@stores/user.store';
 import { getAppointmentCheckup, updateAppointmentStatus } from '@features/shared/calendar/services/calendar.services';
 import { IUpdateStatusRequest } from '@features/shared/calendar/types/appointment.types';
 import { useFormContext } from 'react-hook-form';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { convertCheckups } from '@features/shared/calendar/utils/converter.utils';
+import { createActivity } from '@features/admin/activities/services/activity.services';
 import { useCalendarStore } from '@features/shared/calendar/stores/calendar.stores';
 import FilePlusIcon from '@icons/linear/FilePlusIcon';
 import ComboBox from '@components/ui/ComboBox';
@@ -22,7 +24,7 @@ import NoteIcon from '@icons/linear/NoteIcon';
 import DentalRecordSheet from '../../sheets/DentalRecordSheet';
 
 const ViewStep = () => {
-
+  const user = useUserStore((state) => state.user)
   const { setValue, watch } = useFormContext()
   const [isLoading, setIsLoading] = useState(true)
   const updateAppointments = useCalendarStore((state) => state.updateAppointments)
@@ -75,6 +77,13 @@ const ViewStep = () => {
 
   const statusMutation = useMutation({
     mutationFn: async (data: IUpdateStatusRequest) => {
+      if (user.role === "assistant") {
+        await createActivity({
+          activityAssistantId: user._id,
+          activityDescription: `Status for Appointment ${selectedAppointment.appointmentData.appointmentSerialId} has been edited.`,
+          activityAction: "Update",
+        })
+      }
       setSelectedAppointmentStatus(data.appointmentStatus)
       const response = await updateAppointmentStatus(data);
       return response; 
