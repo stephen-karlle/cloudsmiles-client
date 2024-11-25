@@ -52,7 +52,12 @@ const ActivityDataTable = ({
   if (isLoading) return <TableDataSkeleton />
 
   const filteredData = data?.filter(activity => {
-    return activity.activityAssistantId.assistantFullName.toLowerCase().includes(searchValue.toLowerCase())
+    return (
+      activity.activityAssistantId.assistantFullName.toLowerCase().includes(searchValue.toLowerCase()) ||
+      activity.activityDescription.toLowerCase().includes(searchValue.toLowerCase()) ||
+      activity.activityAssistantId.assistantFullName.includes(searchValue) ||
+      activity.activityAssistantId.assistantAddress.includes(searchValue)
+    )
   })
 
   return (
