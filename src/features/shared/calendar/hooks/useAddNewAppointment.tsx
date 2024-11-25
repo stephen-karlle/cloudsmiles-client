@@ -9,6 +9,8 @@ import { toast } from "sonner";
 import { useAdminStore } from "@stores/admin/admin.store";
 import { convertDateToISOString } from "@utils/date.utils";
 import Toast from "@components/ui/Toast";
+import { useUserStore } from "@stores/user.store";
+import { createActivity } from "@features/admin/activities/services/activity.services";
 
 
 
@@ -18,6 +20,7 @@ const useAddNewAppointment = (
   start: string
 ) => {
 
+  const user = useUserStore((state) => state.user);
 
   const updateAppointments = useCalendarStore((state) => state.updateAppointments);
   const setDrawerOpen = useAdminStore((state) => state.setDrawerOpen);
@@ -72,7 +75,14 @@ const useAddNewAppointment = (
   });
   
   const onSubmit: SubmitHandler<IAppointmentRequest> = async (data) => {
-    
+    if (user.role === "assistant") {
+      await createActivity({
+        activityAssistantId: user._id,
+        activityDescription: `Appointment for ${data.patientData.patientFullName} has been added.`,
+        activityAction: "Create",
+      })
+    }
+
     setIsLoading(true);
     mutation.mutate(data);
   };
