@@ -33,9 +33,15 @@ const header = [
   },
 ]
 
-const InventoryDataTable = () => {
+type InventoryDataTableProps = {
+  searchValue: string
+}
 
-  const { data: products, isLoading } = useQuery({
+const InventoryDataTable = ({
+  searchValue
+}: InventoryDataTableProps) => {
+
+  const { data, isLoading } = useQuery({
     queryKey: ['productTableData'],
     queryFn: async () => {
       const response = await getProducts();
@@ -48,7 +54,9 @@ const InventoryDataTable = () => {
 
   const gridTemplate = "auto 20% 15% 15% 15% 10% 5%"
 
-
+  const filteredProducts = data?.filter(product => {
+    return product.productName.toLowerCase().includes(searchValue.toLowerCase())
+  })
 
   return (
     <DataTable 
@@ -56,7 +64,7 @@ const InventoryDataTable = () => {
       className=""
       gridTemplateColumns={gridTemplate} 
     >
-    {products?.map((product, index) => (
+    {filteredProducts?.map((product, index) => (
       <Fragment key={index}>
         <InventoryRow 
           product={product}
