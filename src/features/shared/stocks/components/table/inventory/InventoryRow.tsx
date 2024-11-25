@@ -19,6 +19,8 @@ import PhilippinePesoIcon from '@icons/linear/PhilippinePesoIcon';
 import Avatar from '@components/ui/Avatar';
 import Drawer from '@components/ui/Drawer';
 import EditProductForm from '../../forms/EditProductForm';
+import { useUserStore } from '@stores/user.store';
+import { createActivity } from '@features/admin/activities/services/activity.services';
 
 interface IInventoryRow {
   product: ProductResponseType;
@@ -32,6 +34,8 @@ const InventoryRow = ({
   gridTemplate,
 }: IInventoryRow ) => {
    
+  const user = useUserStore((state) => state.user)
+
   const [ isDeleteModalOpen, setIsDeleteModalOpen ] = useState<boolean>(false);
   const [ isPopoverOpen, setIsPopoverOpen ] = useState<boolean>(false);
   const { status, color } = getStatusAndColor(product.productQuantity)
@@ -58,6 +62,16 @@ const InventoryRow = ({
     setSelectedProduct(product)
   }
 
+  const handleDelete = async () => {
+    mutation.mutate()
+    if (user.role === "assistant") {
+      await createActivity({
+        activityAssistantId: user._id,
+        activityDescription: `Product ${product.productName} has been permanently removed.`,
+        activityAction: "Delete",
+      })
+    }
+  }
 
   return (
     <TableRow 
@@ -80,7 +94,7 @@ const InventoryRow = ({
         title="Delete Product"
         message="This action cannot be undone. This will permanently delete your product from our servers."
         confirmation={`DELETE ${product.productName}`}
-        handleSubmit={mutation.mutate}
+        handleSubmit={handleDelete}
         isLoading={mutation.isPending}
       />
       <TableData className="flex items-center gap-4">
