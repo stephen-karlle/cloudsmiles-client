@@ -4,7 +4,10 @@ import { MouseEvent } from "react"
 import { Controller, useFormContext } from "react-hook-form"
 import { useMutation } from "@tanstack/react-query"
 import { payWithCash } from "../../services/payment.services"
+import { convertMonthStringToDate } from "../../utils/converter.utils"
 import { PaymentRequestType } from "../../types/appointment.types"
+import { useUserStore } from "@stores/user.store"
+import { createActivity } from "@features/admin/activities/services/activity.services"
 import ErrorMessage from "@components/ui/ErrorMessage"
 import PriceInput from "@components/ui/PriceInput"
 import ChevronIcon from "@icons/linear/ChevronIcon"
@@ -13,14 +16,13 @@ import Button from "@components/ui/Button"
 import RadioButton from "@components/ui/RadioButton"
 import ComboBox from "@components/ui/ComboBox"
 import Label from "@components/ui/Label"
-import { convertMonthStringToDate } from "../../utils/converter.utils"
 
 type PayWithCashCardProps = {
   finish: () => void
 }
 
 const PayWithCashCard = ({ finish} : PayWithCashCardProps ) => {
-
+  const user = useUserStore((state) => state.user)
   const { control, formState: {errors}, setValue, watch, clearErrors } = useFormContext()
   const selectedAppointment = useViewAppointmentStore((state) => state.selectedAppointment)
   const closeCards = usePaymentAppointmentStore((state) => state.closeCards)
@@ -34,6 +36,13 @@ const PayWithCashCard = ({ finish} : PayWithCashCardProps ) => {
 
   const payWithCashMutation = useMutation({
     mutationFn: async (paymentData: PaymentRequestType) => {
+      if (user.role === "assistant") {
+        await createActivity({
+          activityAssistantId: user._id,
+          activityDescription: `Payment for Appointment ${selectedAppointment.appointmentData.appointmentSerialId} has been completed.`,
+          activityAction: "Update",
+        })
+      }
       try {
         const res = await payWithCash(paymentData);
         return res.data; 
@@ -48,10 +57,14 @@ const PayWithCashCard = ({ finish} : PayWithCashCardProps ) => {
 
   const handlePayWithCash = () => {
 
+    console.log(0)
     if (!paymentType || !paymentAmount) return;
   
+    console.log(1)
     if (paymentType === "Full" && paymentAmount < totalCost) return;
+    console.log(2)
     if (paymentType === "Installment" && (!paymentDueDate || paymentAmount < 100)) return;
+    console.log(3)
 
     const paymentStatus = paymentType === "Full" ? "paid" : "partial";
 
