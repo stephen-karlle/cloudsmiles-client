@@ -8,6 +8,8 @@ import { paymentLogoMap, paymentMethodMap } from "@features/shared/payments/cons
 import { usePaymentAppointmentStore, useViewAppointmentStore } from "../../stores/appointment.stores"
 import { PaymentRequestType } from "@features/shared/calendar/types/appointment.types"
 import { convertMonthStringToDate } from "../../utils/converter.utils"
+import { useUserStore } from "@stores/user.store"
+import { createActivity } from "@features/admin/activities/services/activity.services"
 import ErrorMessage from "@components/ui/ErrorMessage"
 import RadioButton from "@components/ui/RadioButton"
 import PriceInput from "@components/ui/PriceInput"
@@ -34,6 +36,9 @@ const PayWithEWallet = ({ method, finish }: PayWithEWalletProps) => {
     watch,
     setError
 } = useFormContext()
+
+  const user = useUserStore((state) => state.user)
+
   const selectedAppointment = useViewAppointmentStore(state => state.selectedAppointment) 
   const paymentStep = usePaymentAppointmentStore(state => state.paymentSteps[method])
   const setPaymentStep = usePaymentAppointmentStore(state => state.setPaymentStep)
@@ -55,6 +60,13 @@ const PayWithEWallet = ({ method, finish }: PayWithEWalletProps) => {
 
   const billMutation = useMutation({
     mutationFn: async (data: PaymentRequestType) => {
+      if (user.role === "assistant") {
+        await createActivity({
+          activityAssistantId: user._id,
+          activityDescription: `Bill for Appointment ${selectedAppointment.appointmentData.appointmentSerialId} has been generated.`,
+          activityAction: "Create",
+        })
+      }
       data.paymentDueDate =  paymentDueDate ? convertMonthStringToDate(paymentDueDate) : undefined
       data.paymentMethod = paymentMethod
       await createBill(data)
@@ -70,7 +82,16 @@ const PayWithEWallet = ({ method, finish }: PayWithEWalletProps) => {
       setIsLoading(true)
       const status = await checkBillStatus(appointment._id, paymentMethod)
       queryClient.removeQueries({ queryKey: ["appointmentPaymentQrCode"]})
-      if (status === "succeeded") finish()
+      if (status === "succeeded") {
+        if (user.role === "assistant") {
+          await createActivity({
+            activityAssistantId: user._id,
+            activityDescription: `Payment for Appointment ${selectedAppointment.appointmentData.appointmentSerialId} has been completed.`,
+            activityAction: "Update",
+          })
+        }
+        finish()
+      }
       return status
     },
     onSettled: () => setIsLoading(false)
@@ -113,6 +134,7 @@ const PayWithEWallet = ({ method, finish }: PayWithEWalletProps) => {
     billMutation.mutate(data);
   };
   
+
   const handleCheckBillStatus = () => {
     if (timer > 0) return
     statusMutation.mutate()
