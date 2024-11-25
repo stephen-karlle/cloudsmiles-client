@@ -7,10 +7,12 @@ import { editVendor } from "../services/vendor.services";
 import { toast } from "sonner";
 import { useDrawerStore } from "@stores/drawer.store";
 import { useVendorStore } from "../stores/vendor.store";
+import { createActivity } from "@features/admin/activities/services/activity.services";
+import { useUserStore } from "@stores/user.store";
 import Toast from "@components/ui/Toast";
 
 const useEditVendor = () => {
-
+  const user = useUserStore((state) => state.user);
   const queryClient = useQueryClient();
   const selectedVendor = useVendorStore((state) => state.selectedVendor);
   const setIsLoading = useDrawerStore((state) => state.setIsLoading);
@@ -62,8 +64,14 @@ const useEditVendor = () => {
 
 
   const onSubmit: SubmitHandler<VendorRequestType> = async (data) => {
+    if (user.role === "assistant") {
+      await createActivity({
+        activityAssistantId: user._id,
+        activityDescription: `Vendor details for ${data.vendorCompanyName} has been edited.`,
+        activityAction: "Update",
+      })
+    }
     mutation.mutate(data);
-    console.log(data);
   };
 
   return {
