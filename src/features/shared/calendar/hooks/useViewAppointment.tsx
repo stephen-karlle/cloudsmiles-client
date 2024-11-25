@@ -5,10 +5,12 @@ import {  DentalCheckupRequestType } from "../types/appointment.types";
 import { useMutation } from "@tanstack/react-query";
 import { updateAppointmentCheckup } from "../services/calendar.services";
 import { useViewAppointmentStore } from "../stores/appointment.stores";
+import { useUserStore } from "@stores/user.store";
+import { createActivity } from "@features/admin/activities/services/activity.services";
 
 
 const useViewAppointment = () => {
-
+  const user = useUserStore((state) => state.user)
   const setViewActiveSheets = useViewAppointmentStore((state) => state.setViewActiveSheets)
   const selectedAppointment = useViewAppointmentStore((state) => state.selectedAppointment)
   const setIsLoading = useViewAppointmentStore((state) => state.setIsLoading)
@@ -46,6 +48,13 @@ const useViewAppointment = () => {
   });
   
   const onSubmit: SubmitHandler<DentalCheckupRequestType> = async (data) => {
+    if (user.role === "assistant") {
+      await createActivity({
+        activityAssistantId: user._id,
+        activityDescription: `Dental checkup for ${selectedAppointment.patientData.patientFullName} has been edited.`,
+        activityAction: "Update",
+      })
+    }
 
     setIsLoading(true)
     const formData = new FormData();
