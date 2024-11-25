@@ -33,7 +33,13 @@ const header = [
   },
 ]
 
-const VendorDataTable = () => {
+type VendorDataTableProps = {
+  searchValue: string
+}
+
+const VendorDataTable = ({
+  searchValue
+}: VendorDataTableProps) => {
 
 
   const { data: vendors, isLoading } = useQuery<VendorResponseType[]>(
@@ -48,13 +54,17 @@ const VendorDataTable = () => {
 
   const gridTemplate = "15% auto 20% 15% 15% 10% 5%"
 
+  const filteredData = vendors?.filter(vendor => {
+    return vendor.vendorCompanyName.toLowerCase().includes(searchValue.toLowerCase())
+  })
+
   return (
     <DataTable
       header={header} 
       className=""
       gridTemplateColumns={gridTemplate} 
     >
-      {vendors?.map((vendor, index) => (
+      {filteredData?.map((vendor, index) => (
         <Fragment key={index}>
           <VendorRow 
             vendor={vendor}
