@@ -32,9 +32,15 @@ const header = [
   },
 ]
 
-const OrderDataTable = () => {
+type OrderDataTableProps = {
+  searchValue: string
+}
 
-  const { data: orders, isLoading } = useQuery({
+const OrderDataTable = ({
+  searchValue
+}: OrderDataTableProps) => {
+
+  const { data, isLoading } = useQuery({
     queryKey: ['ordersTableData'],
     queryFn: async () => {
       const response = await getOrders();
@@ -46,6 +52,10 @@ const OrderDataTable = () => {
 
   const gridTemplate = "auto 15% 20% 10% 15% 10% 10%"
 
+  const filteredOrders = data?.filter(order => {
+    return order.orderVendorId.vendorCompanyName.toLowerCase().includes(searchValue.toLowerCase())
+  })
+
 
 
   return (
@@ -54,7 +64,7 @@ const OrderDataTable = () => {
       className=""
       gridTemplateColumns={gridTemplate} 
     >
-      {orders?.map((order, index) => (
+      {filteredOrders?.map((order, index) => (
         <OrderRow 
           key={index}
           order={order}
