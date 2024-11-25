@@ -57,7 +57,7 @@ export type DashboardPatientType = {
 
 export type DashboardPaymentType = {
   payments: PaymentResponseType[],
-  totalRevenue: number,
+  totalPayments: number,
   data: PaymentData[],
   partialPayments: number,
   paidPayments: number
