@@ -34,9 +34,13 @@ const TreatmentHeader = () => {
             </figure>
           </section>          
           <section className="flex items-center justify-start h-full">
-            <section className="flex flex-col items-start h-full">
-              <label className="text-xs font-medium tracking-wide text-gray-500">TOTAL TREATMENTS</label>
-              <h1 className="text-3xl font-medium tracking-tight text-gray-900">{treatmentCount}</h1>
+            <section className="flex flex-col items-start gap-1 h-full">
+              <label className="text-xs font-medium tracking-wide text-gray-500">
+                TOTAL TREATMENTS
+              </label>
+              <h1 className="text-3xl font-medium tracking-tight text-gray-900">
+                {treatmentCount}
+                </h1>
             </section>
           </section>
         </header>
