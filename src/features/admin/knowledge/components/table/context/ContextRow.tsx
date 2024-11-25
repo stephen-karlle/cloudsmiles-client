@@ -3,6 +3,7 @@ import { useKnowledgeStore } from '../../../stores/knowledge.store';
 import { ContextResponseType } from '../../../types/context.types';
 import { formatISODateWithStringWithSuffix } from '@features/shared/calendar/utils/calendar.utils';
 import { useRef, useState } from 'react';
+import { getCategoryStyle } from '../../utils/knowledge.utils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteContext } from '../../../services/knowledge.services';
 import { toast } from 'sonner';
@@ -13,7 +14,6 @@ import PopOver from '@components/ui/PopOver';
 import EditContextForm from '../../forms/EditContextForm';
 import DeleteModal from '@components/ui/DeleteModal';
 import Toast from '@components/ui/Toast';
-import { getCategoryStyle } from '../../utils/knowledge.utils';
 
 
 interface IContextRow{
