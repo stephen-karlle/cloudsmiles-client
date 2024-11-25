@@ -1,8 +1,6 @@
-import Button from '@components/ui/Button'
 import CalendarDatePicker from '@features/shared/calendar/components/scheduler/inputs/CalendarDatePicker'
 import CalendarIcon from '@icons/linear/CalendarIcon'
 import ChevronIcon from '@icons/linear/ChevronIcon'
-import PlusIcon from '@icons/linear/PlusIcon'
 
 type SchedulerHeaderProps = {
   date: Date,
@@ -65,12 +63,7 @@ const SchedulerHeader = ({
       </section>
 
       <section className="w-fit flex items-center justify-end gap-4 ">
-        <Button 
-          variant="primary"
-        >
-          <PlusIcon className="stroke-2 stroke-white whitespace-nowrap" />
-           Create Appointment
-        </Button>
+
       </section>
       
     </article>
