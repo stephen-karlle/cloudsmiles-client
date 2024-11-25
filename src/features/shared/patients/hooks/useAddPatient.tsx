@@ -1,3 +1,4 @@
+import { createActivity } from "@features/admin/activities/services/activity.services";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -5,11 +6,12 @@ import { NewPatientSchema } from "../schemas/patient.schema";
 import { toast } from "sonner";
 import { usePatientStore } from "../stores/patient.store";
 import { PatientRequestType } from "../types/patient.types";
-import Toast from "@components/ui/Toast";
 import { createPatient } from "../services/patient.services";
+import { useUserStore } from "@stores/user.store";
+import Toast from "@components/ui/Toast";
 
 const useAddPatient = () => {
-
+  const user = useUserStore((state) => state.user);
   const queryClient = useQueryClient();
   const setPatientDrawerOpen = usePatientStore((state) => state.setPatientDrawerOpen)
   const setIsLoading = usePatientStore((state) => state.setIsLoading)
@@ -47,6 +49,13 @@ const useAddPatient = () => {
   });
   
   const onSubmit: SubmitHandler<PatientRequestType> = async (data) => {
+    if (user.role === "assistant") {
+      await createActivity({
+        activityAssistantId: user._id,
+        activityDescription: `Patient details for ${data.patientFullName} has been created.`,
+        activityAction: "Create",
+      })
+    }
     setIsLoading(true)
     const formData = new FormData();
     Object.entries(data).forEach(([key, value]) => {
