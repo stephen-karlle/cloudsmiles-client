@@ -13,8 +13,16 @@ import Button from '@components/ui/Button';
 import FilterLinesIcon from '@icons/linear/FilterLinesIcon';
 import PlusIcon from '@icons/linear/PlusIcon';
 import PurchaseOrderForm from './forms/PurchaseOrderForm';
+import SearchInput from '@components/shared/SearchInput';
 
-const StocksHeader = () => {
+
+type StocksHeaderProps = ({
+  onChange: (value: string) => void
+})
+
+const StocksHeader = ({
+  onChange
+}: StocksHeaderProps) => {
   
   const activeOutlet = useStocksStore((state) => state.activeOutlet);
   const setActiveOutlet = useStocksStore((state) => state.setActiveOutlet)
@@ -69,32 +77,32 @@ const StocksHeader = () => {
           <Seperator className="h-16 mx-4" />
           <StackedBarChart data={data.stocks} totalProducts={data.totalProducts} />
         </header>
-         <header className="w-full flex gap-8 items-center justify-start h-auto px-6">
-            <LinkButton 
-              onClick={()=>setActiveOutlet("Inventory")}
-              isActive={activeOutlet === "Inventory"} 
-            >
-              Inventory
-            </LinkButton>
-            <LinkButton 
-              onClick={()=>setActiveOutlet("Order")}
-              isActive={activeOutlet === "Order"} 
-            >
-              Orders
-            </LinkButton>
-          </header>
-         <header className="flex items-center justify-between h-20 px-6 border-t border-gray-200">
-           <Button variant="secondary" className="gap-2">
-             <FilterLinesIcon className="w-5 h-5 stroke-2 stroke-gray-700" />
-             Filters
-           </Button>
-            <Button 
-              variant="primary"
-              onClick={activeOutlet === "Inventory" ? handleOpenAddProductDrawer : handleOpenPurchaseOrderDrawer}
-            >
-              <PlusIcon className="stroke-2 stroke-white" />
-              New {activeOutlet === "Inventory" ? "Product" : "Order"}
-            </Button>
+        <header className="w-full flex gap-8 items-center justify-start h-auto px-6">
+          <LinkButton 
+            onClick={()=>setActiveOutlet("Inventory")}
+            isActive={activeOutlet === "Inventory"} 
+          >
+            Inventory
+          </LinkButton>
+          <LinkButton 
+            onClick={()=>setActiveOutlet("Order")}
+            isActive={activeOutlet === "Order"} 
+          >
+            Orders
+          </LinkButton>
+        </header>
+        <header className="flex items-center justify-between h-20 px-6 border-t border-gray-200">
+          <SearchInput
+            placeholder={`Search ${activeOutlet === "Inventory" ? "products" : "orders"}...`}
+            onChange={onChange}
+          />
+          <Button 
+            variant="primary"
+            onClick={activeOutlet === "Inventory" ? handleOpenAddProductDrawer : handleOpenPurchaseOrderDrawer}
+          >
+            <PlusIcon className="stroke-2 stroke-white" />
+            New {activeOutlet === "Inventory" ? "Product" : "Order"}
+          </Button>
          </header>
        </section>
      )
