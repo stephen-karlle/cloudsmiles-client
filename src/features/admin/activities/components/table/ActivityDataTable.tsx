@@ -28,7 +28,13 @@ const header = [
   },
 ]
 
-const ActivityDataTable = () => {
+type ActivityDataTableProps = ({
+  searchValue: string
+})
+
+const ActivityDataTable = ({
+  searchValue 
+}:ActivityDataTableProps) => {
   
   const { data, isLoading } = useQuery<ActivityType[]>(
     {
@@ -41,7 +47,9 @@ const ActivityDataTable = () => {
 
   if (isLoading) return <TableDataSkeleton />
 
-  console.log(data)
+  const filteredData = data?.filter(activity => {
+    return activity.activityAssistantId.assistantFullName.toLowerCase().includes(searchValue.toLowerCase())
+  })
 
   return (
     <DataTable 
@@ -49,7 +57,7 @@ const ActivityDataTable = () => {
       className=""
       gridTemplateColumns={gridTemplate} 
     >
-      {data?.map((activity, index) => (
+      {filteredData?.map((activity, index) => (
         <ActivityRow 
           key={index}
           activity={activity}
