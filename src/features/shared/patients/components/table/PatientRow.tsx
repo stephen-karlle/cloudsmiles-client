@@ -8,6 +8,8 @@ import { deletePatient } from '../../services/patient.services';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { isNew } from '@utils/date.utils';
+import { useUserStore } from '@stores/user.store';
+import { createActivity } from '@features/admin/activities/services/activity.services';
 import EditIcon from '@icons/linear/EditIcon';
 import PopOver from '@components/ui/PopOver';
 import Avatar from '@components/ui/Avatar'
@@ -30,6 +32,7 @@ const PatientRow = ({
   index,
   gridTemplate,
 }: IPatientRow ) => {
+  const user = useUserStore((state) => state.user)
   const queryClient = useQueryClient()
   const navigate = useNavigate()
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false)
@@ -83,6 +86,17 @@ const PatientRow = ({
     }
   })
 
+  const handleDelete = async () => {
+    mutation.mutate()
+    if (user.role === "assistant") {
+      await createActivity({
+        activityAssistantId: user._id,
+        activityDescription: `Patient ${patient.patientFullName} has been permanently removed.`,
+        activityAction: "Delete",
+      })
+    }
+  }
+
   return (
     <TableRow 
       index={index}
@@ -98,7 +112,7 @@ const PatientRow = ({
         title="Delete Patient"
         message="This action cannot be undone. This will permanently delete your patient from our servers."
         confirmation={`DELETE ${patient.patientFullName}`}
-        handleSubmit={mutation.mutate}
+        handleSubmit={handleDelete}
         isLoading={mutation.isPending}
       />
       <TableData
