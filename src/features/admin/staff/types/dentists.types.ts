@@ -37,6 +37,8 @@ export interface IDentistResponse {
   dentistMedicalServices: string[];
   dentistCosmeticServices: string[];
   dentistScheduleId: IScheduleResponse;
+  dentistRatings: number;
+  dentistReviews: number;
   dentistCredentialId: {
     credentialEmail: string;
     credentialPhoneNumber: string;
