@@ -10,9 +10,9 @@ export const getPayments = async () => {
   }
 }
 
-export const getMonthlyRevenue = async () => {
+export const getPaymentCount = async () => {
   try {
-    const res = await privateApiClient.get('/payment/v1/monthly-revenue')
+    const res = await privateApiClient.get('/payment/v1/get-payment-count')
     return res.data 
   } catch (error) {
     console.error(error);
