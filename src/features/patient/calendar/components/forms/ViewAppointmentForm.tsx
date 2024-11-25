@@ -87,7 +87,7 @@ const ViewAppointmentForm = () => {
       setDrawerOpen(false)
       queryClient.invalidateQueries({queryKey: ['patientAppointmentsData']});
       toast.custom(() => (
-        <Toast title={appointmentData.appointmentSerialId} message="has been deleted" subtitle={formatISODateWithStringWithSuffix(appointmentData.appointmentDate.start)} status="success"/>
+        <Toast title={appointmentData.appointmentSerialId} message="has been cancelled" subtitle={formatISODateWithStringWithSuffix(appointmentData.appointmentDate.start)} status="success"/>
       ),{duration:5000});    
     }
   })
