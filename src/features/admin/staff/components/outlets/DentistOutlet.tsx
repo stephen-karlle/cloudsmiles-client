@@ -1,14 +1,16 @@
+import { useState } from "react"
 import StaffHeader from "../StaffHeader"
 import DentistDataTable from "../table/dentist/DentistDataTable"
 
 const DentistOutlet = () => {
 
+  const [searchValue, setSearchValue] = useState<string>("")
 
   return (
     <main className="h-full bg-white flex flex-col">
-      <StaffHeader />
+      <StaffHeader onChange={setSearchValue} />
       <section className="flex-grow overflow-y-hidden">
-        <DentistDataTable />
+        <DentistDataTable searchValue={searchValue} />
       </section>
     </main>
   )
