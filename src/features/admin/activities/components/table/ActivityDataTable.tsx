@@ -47,7 +47,7 @@ const ActivityDataTable = ({
     },
   );
 
-  const gridTemplate = "15% 15% auto 10% 15% 15%"
+  const gridTemplate = "10% 25% auto 10% 15% 15%"
 
   if (isLoading) return <TableDataSkeleton />
 
