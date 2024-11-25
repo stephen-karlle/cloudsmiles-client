@@ -3,10 +3,15 @@ import { getMonthlyRevenue } from '../services/payment.services'
 import LinkButton from '@components/shared/LinkButton'
 import PaymentGraph from './graphs/PaymentGraph'
 import TableHeaderSkeleton from '@components/shared/skeletons/TableHeaderSkeleton'
-import Button from '@components/ui/Button'
-import FilterLinesIcon from '@icons/linear/FilterLinesIcon'
+import SearchInput from '@components/shared/SearchInput'
 
-const PaymentHeader = () => {
+type PaymentHeaderProps = {
+  onChange: (value: string) => void
+}
+
+const PaymentHeader = ({
+  onChange
+}: PaymentHeaderProps) => {
 
   const { data, isLoading } = useQuery(
     {
@@ -34,10 +39,10 @@ const PaymentHeader = () => {
           </LinkButton>
         </header>
         <header className="flex items-center justify-between h-20 px-6 border-t border-gray-200">
-          <Button variant="secondary" className="gap-2">
-            <FilterLinesIcon className="w-5 h-5 stroke-2 stroke-gray-700" />
-            Filters
-          </Button>
+          <SearchInput
+            placeholder='Search payments...' 
+            onChange={onChange}
+          />
         </header>
       </section>
     )
