@@ -11,17 +11,9 @@ export type TreatmentRequestType = {
   treatmentRepetition: string;
   treatmentComponents: ITreatmentComponent[];
   treatmentMedicines:TreatmentMedicineType[];
-  // treatmentVisits: ITreatmentVisit[];
 }
 
-// export interface ITreatmentVisit {
-//   treatmentId?:string
-//   treatmentName:string
-//   treatmentDescription: string;
-//   treatmentDuration: string;
-//   treatmentComponents: ITreatmentComponent[];
-//   timeInterval: ITimeInterval
-// }
+
 
 export interface ITimeInterval{
   value: string;
@@ -85,6 +77,8 @@ export interface ITreatmentDataResponse {
   treatmentDuration: string;
   treatmentComponents: TreatmentComponentResponseType[];
   treatmentMedicines: TreatmentMedicineResponseType[];
+  treatmentRatings: number;
+  treatmentReviews: string[];
   createdAt: Date;
   updatedAt: Date;
 }
