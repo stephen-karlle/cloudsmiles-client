@@ -8,7 +8,7 @@ const ActivityHeader = () => {
 
   const { data: activityCount, isLoading} = useQuery(
     {
-      queryKey: ['treatmentHeaderData', 'treatmentTableData'],
+      queryKey: ['activityHeaderData', 'activityTableData'],
       queryFn: getActivityCount,
     },
   );
