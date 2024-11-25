@@ -7,10 +7,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { receieveOrder } from "../services/order.services";
 import { toast } from "sonner";
 import { useDrawerStore } from "@stores/drawer.store";
+import { createActivity } from "@features/admin/activities/services/activity.services";
+import { useUserStore } from "@stores/user.store";
 import Toast from "@components/ui/Toast";
 
 const useReceiveOrder = () => {
-
+  const user = useUserStore((state) => state.user);
   const queryClient = useQueryClient();
   const closeDrawer = useDrawerStore((state) => state.closeDrawer);
   const setIsLoading = useStocksStore((state) => state.setIsLoading);
@@ -52,6 +54,13 @@ const useReceiveOrder = () => {
 
 
   const onSubmit: SubmitHandler<OrderReceiveType> = async (data) => {
+    if (user.role === "assistant") {
+      await createActivity({
+        activityAssistantId: user._id,
+        activityDescription: `Purchase order for ${selectedOrder.orderSerialId} has been received.`,
+        activityAction: "Create",
+      })
+    }
     mutation.mutate(data);
   };
 
