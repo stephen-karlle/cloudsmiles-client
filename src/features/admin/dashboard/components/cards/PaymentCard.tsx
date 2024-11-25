@@ -16,7 +16,7 @@ const PaymentCard = () => {
   const [selectedYear, setSelectedYear] = useState<string>('2024')
 
   const [payments, setPayments] = useState<DashboardPaymentType>({
-    totalRevenue: 0,
+    totalPayments: 0,
     payments: [],
     data: [],
     partialPayments: 0,
@@ -78,10 +78,9 @@ const PaymentCard = () => {
       <div className="flex w-full justify-between items-center">        
         <div className="w-full flex items-start gap-2">
           <div className="flex flex-col items-start w-full" >
-            <p className="text-xs text-gray-500 uppercase tracking-wide">Total Revenue</p>
+            <p className="text-xs text-gray-500 uppercase tracking-wide">Total Payments</p>
             <div className="flex items-center">
-              <PhilippinePesoIcon className="w-4 h-4 stroke-2 stroke-gray-700" />
-              <p className="text-base font-medium text-gray-700">{(payments.totalRevenue).toLocaleString('en-US')}</p>
+              <p className="text-base font-medium text-gray-700">{payments.totalPayments}</p>
             </div>
           </div>
         </div>
