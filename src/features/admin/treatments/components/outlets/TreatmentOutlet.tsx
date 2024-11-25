@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useDrawerStore } from '@stores/drawer.store'
 import { FormProvider } from "react-hook-form"
 import { useTreatmentStore } from '../../stores/treatment.store'
@@ -10,6 +11,7 @@ import EditTreatmentForm from '../forms/EditTreatmentForm'
 import useEditTreatment from '../../hooks/useEditTreatment'
 
 const TreatmentOutlet = () => {
+  const [ searchValue, setSearchValue ] = useState('')
 
   const isAddDrawerOpen = useDrawerStore((state) => state.isDrawerOpen)
   const activeSheets = useDrawerStore((state) => state.activeSheets)
@@ -50,9 +52,9 @@ const TreatmentOutlet = () => {
           />
         </form>
       </FormProvider>
-      <TreatmentHeader />
+      <TreatmentHeader onChange={setSearchValue} />
       <section className="flex-grow overflow-y-hidden">
-        <TreatmentDataTable />
+        <TreatmentDataTable searchValue={searchValue} />
       </section>
     </main>
   )
