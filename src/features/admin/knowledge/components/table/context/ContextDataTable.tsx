@@ -30,7 +30,13 @@ const header = [
   },
 ]
 
-const ContextDataTable = () => {
+type ContextDataTableProps = {
+  searchValue: string
+}
+
+const ContextDataTable = ({
+  searchValue
+}: ContextDataTableProps) => {
 
 
   const { data: contexts, isLoading } = useQuery<ContextResponseType[]>(
@@ -46,6 +52,14 @@ const ContextDataTable = () => {
 
   const gridTemplate = "10% 20% 15% auto 10% 5%"
 
+  const filteredContexts = contexts?.filter((context) => {
+    return (
+      context.contextLabel.toLowerCase().includes(searchValue.toLowerCase()) ||
+      context.contextCategory.toLowerCase().includes(searchValue.toLowerCase()) ||
+      context.contextData.toLowerCase().includes(searchValue.toLowerCase())
+    )
+  })
+
 
 
   return (
@@ -57,7 +71,7 @@ const ContextDataTable = () => {
       onPageChange={() => {}}
       totalPages={0}
     >
-      {contexts?.map((context, index) => (
+      {filteredContexts?.map((context, index) => (
         <Fragment 
           key={index}
         >
