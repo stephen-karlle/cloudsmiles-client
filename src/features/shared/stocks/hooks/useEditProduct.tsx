@@ -8,10 +8,12 @@ import { useMutation } from "@tanstack/react-query";
 import { editProduct, validateSku } from "../services/product.services";
 import { useDrawerStore } from "@stores/drawer.store";
 import { useStocksStore } from "../stores/stocks.store";
+import { createActivity } from "@features/admin/activities/services/activity.services";
+import { useUserStore } from "@stores/user.store";
 import Toast from "@components/ui/Toast";
 
 const useEditProduct = () => {
-
+  const user = useUserStore((state) => state.user);
   const queryClient = useQueryClient();
   const selectedProduct = useStocksStore((state) => state.selectedProduct);
   const closeDrawer = useDrawerStore((state) => state.closeDrawer);
@@ -63,8 +65,7 @@ const useEditProduct = () => {
 
 
 
-  const onSubmit: SubmitHandler<ProductRequestType> = async (data) => {
-    
+  const onSubmit: SubmitHandler<ProductRequestType> = async (data) => { 
     const isSkuValid = await validateSku(data.productSku);
     if (!isSkuValid && selectedProduct.productSku !== data.productSku) {
       methods.setError('productSku', {
@@ -72,6 +73,14 @@ const useEditProduct = () => {
         message: 'SKU already exists'
       });
       return;
+    }
+
+    if (user.role === "assistant") {
+      await createActivity({
+        activityAssistantId: user._id,
+        activityDescription: `Product detials for ${data.productName} has been edited.`,
+        activityAction: "uPDATE",
+      })
     }
 
     mutation.mutate(data);
