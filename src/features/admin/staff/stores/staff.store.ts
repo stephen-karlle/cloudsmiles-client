@@ -21,6 +21,8 @@ export const useStaffStore = create<IStaffStore>()((set) => ({
     dentistScheduleId: {
       schedules: []
     },
+    dentistRatings: 0,
+    dentistReviews: 0,
     createdAt: "",
     updatedAt: "",  
   },
