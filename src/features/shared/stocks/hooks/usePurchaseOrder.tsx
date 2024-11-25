@@ -7,10 +7,12 @@ import { createOrder } from "../services/order.services";
 import { toast } from "sonner";
 import { useStocksStore } from "../stores/stocks.store";
 import { useDrawerStore } from "@stores/drawer.store";
+import { createActivity } from "@features/admin/activities/services/activity.services";
+import { useUserStore } from "@stores/user.store";
 import Toast from "@components/ui/Toast";
 
 const usePurchaseOrder = () => {
-
+  const user = useUserStore((state) => state.user);
   const queryClient = useQueryClient();
   const setDrawerOpen = useDrawerStore((state) => state.setDrawerOpen);
   const setIsLoading = useStocksStore((state) => state.setIsLoading);
@@ -48,6 +50,13 @@ const usePurchaseOrder = () => {
 
 
   const onSubmit: SubmitHandler<OrderType> = async (data) => {
+    if (user.role === "assistant") {
+      await createActivity({
+        activityAssistantId: user._id,
+        activityDescription: `Purchase order for ${data.orderVendorId} has been added.`,
+        activityAction: "Create",
+      })
+    }
     mutation.mutate(data);
   };
 
