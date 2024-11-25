@@ -59,7 +59,7 @@ const usePayPartially = () => {
     if (user.role === "assistant") {
       await createActivity({
         activityAssistantId: user._id,
-        activityDescription: `Payment for Appointment-${selectedPayment.paymentAppointmentId.appointmentSerialId} has been updated.`,
+        activityDescription: `Payment for Appointment ${selectedPayment.paymentAppointmentId.appointmentSerialId} has been updated.`,
         activityAction: "Create",
       })
     }
