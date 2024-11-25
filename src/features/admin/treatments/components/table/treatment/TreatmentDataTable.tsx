@@ -33,7 +33,13 @@ const header = [
   },
 ]
 
-const TreatmentDataTable = () => {
+type TreatmentDataTableProps = {
+  searchValue: string
+}
+
+const TreatmentDataTable = ({
+  searchValue
+}: TreatmentDataTableProps) => {
   
   const { data, isLoading } = useQuery<ITreatmentDataResponse[]>(
     {
@@ -46,23 +52,25 @@ const TreatmentDataTable = () => {
 
   if (isLoading) return <TableDataSkeleton />
 
+  const filteredTreatments = data?.filter((treatment) => {
+    return treatment.treatmentName.toLowerCase().includes(searchValue.toLowerCase())
+  })
+
   return (
     <DataTable 
       header={header} 
       className=""
       gridTemplateColumns={gridTemplate} 
     >
-
-    {data?.map((treatment, index) => (
-      <Fragment key={index}>
-        <TreatmentRow 
-          treatment={treatment}
-          index={index}
-          gridTemplate={gridTemplate}
-        />
-      </Fragment>
-    ))}
-    
+      {filteredTreatments?.map((treatment, index) => (
+        <Fragment key={index}>
+          <TreatmentRow 
+            treatment={treatment}
+            index={index}
+            gridTemplate={gridTemplate}
+          />
+        </Fragment>
+      ))}
     </DataTable>
   )
 }
