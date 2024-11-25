@@ -7,6 +7,10 @@ import ActivityRow from './ActivityRow';
 
 const header = [
   {
+    title: 'ID',
+    sortable: true,
+  },
+  {
     title: 'ASSISTANT',
     sortable: true,
   },
@@ -43,7 +47,7 @@ const ActivityDataTable = ({
     },
   );
 
-  const gridTemplate = "20% auto 15% 15% 15%"
+  const gridTemplate = "15% 15% auto 10% 15% 15%"
 
   if (isLoading) return <TableDataSkeleton />
 
