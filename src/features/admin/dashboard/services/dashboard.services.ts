@@ -18,3 +18,12 @@ export const getVisits = async () => {
     console.error(error);
   }
 }
+
+export const getTopTreatments = async () => {
+  try {
+    const res = await privateApiClient.get('/treatment/v1/get-top-treatments');
+    return res.data;
+  } catch (error) {
+    console.error(error);
+  }
+}
