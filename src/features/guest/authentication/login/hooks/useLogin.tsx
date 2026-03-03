@@ -15,8 +15,8 @@ const useLogin = () => {
     resolver: zodResolver(LoginSchema),
     mode: "onSubmit",
     defaultValues: {
-      email: "admin@vsdental.com",
-      password: "Sphen0915026606!",
+      email: "",
+      password: "",
     },
   });
 
